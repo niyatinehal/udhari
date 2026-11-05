@@ -5,7 +5,9 @@
     "ccipRouter": "0xF694E193200268f9a4868e4Aa017A0118C9a8177",
     "link": "0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846",
     "creMockForwarder": "0x2e7371a5d032489e4f60216d8d898a4c10805963",
-    "creRelayManual": "0x01c23dC688aB4df2E4329C6F32af5Ef7fbf1B45C"
+    "creRelayManual": "0x01c23dC688aB4df2E4329C6F32af5Ef7fbf1B45C",
+    "creRelay": "0xA074d972967c69BB5a0ae669e2d807b1744857b2",
+    "note": "creRelay has the same address as hedera.dealManager by coincidence: the operator nonce matched on both chains."
   },
   "hedera": {
     "chainId": 296,

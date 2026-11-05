@@ -1,0 +1,6 @@
+{
+  "schedule": "0 */10 * * * *",
+  "chainSelectorName": "avalanche-testnet-fuji",
+  "relayAddress": "0xA074d972967c69BB5a0ae669e2d807b1744857b2",
+  "gasLimit": "1000000"
+}

@@ -1,0 +1,5 @@
+# CRE project settings. Workflows write to Avalanche Fuji; reports continue to Hedera over CCIP.
+staging-settings:
+  rpcs:
+    - chain-name: avalanche-testnet-fuji
+      url: https://api.avax-test.network/ext/bc/C/rpc
