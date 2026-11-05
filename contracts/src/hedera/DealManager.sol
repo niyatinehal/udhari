@@ -40,7 +40,8 @@ contract DealManager is CCIPReceiver, Ownable, ReentrancyGuard, IAtsExternalKycL
         Active, // fully funded, business paid, waiting for the buyer
         Repaid, // buyer paid; holders can redeem
         Late, // past due and unpaid; bond paused
-        Defaulted
+        Defaulted,
+        Expired // due date passed before full funding; holders get their USDC back
     }
 
     struct Deal {
@@ -327,15 +328,27 @@ contract DealManager is CCIPReceiver, Ownable, ReentrancyGuard, IAtsExternalKycL
         if (wasPaused) _unpause(d.bond);
     }
 
-    /// @notice Redeem every unit the caller holds for its share of the repayment.
+    /// @notice Close a deal that reached its due date without full funding. Anyone can call it;
+    ///         holders then redeem their units 1:1 for the USDC they put in.
+    function expire(uint256 dealId) external {
+        Deal storage d = s_deals[dealId];
+        if (d.status != Status.Approved && d.status != Status.Open) revert BadStatus(dealId, d.status);
+        // forge-lint: disable-next-line(block-timestamp)
+        if (block.timestamp < d.dueDate) revert NotDueYet(d.dueDate);
+        d.status = Status.Expired;
+        emit StatusChanged(dealId, Status.Expired);
+    }
+
+    /// @notice Redeem every unit the caller holds: its share of the repayment, or a 1:1 refund
+    ///         if the deal expired unfunded.
     function redeem(uint256 dealId) external nonReentrant {
         Deal storage d = s_deals[dealId];
-        if (d.status != Status.Repaid) revert BadStatus(dealId, d.status);
+        if (d.status != Status.Repaid && d.status != Status.Expired) revert BadStatus(dealId, d.status);
         IAtsBond bond = IAtsBond(d.bond);
         uint256 units = bond.balanceOf(msg.sender);
         if (units == 0) revert NothingToRedeem();
 
-        uint256 payout = units * d.repaidAmount / d.target;
+        uint256 payout = d.status == Status.Repaid ? units * d.repaidAmount / d.target : units;
         reserved -= payout;
         emit Redeemed(dealId, msg.sender, units, payout);
 

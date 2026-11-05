@@ -260,6 +260,39 @@ contract DealManagerTest is Test {
         manager.invest(dealId, 10e6);
     }
 
+    // ---------------------------------------------------------------- expiry
+
+    function test_UnfundedDealExpiresAndRefunds() public {
+        uint256 dealId = _approve(keccak256("doc"));
+        MockBond bond = MockBond(manager.openDeal(dealId));
+        _verify(alice);
+        vm.prank(alice);
+        manager.invest(dealId, 40e6);
+
+        vm.expectRevert();
+        manager.expire(dealId);
+
+        vm.warp(block.timestamp + 1 days);
+        vm.prank(bob); // anyone can expire
+        manager.expire(dealId);
+        assertEq(uint8(manager.getDeal(dealId).status), uint8(DealManager.Status.Expired));
+
+        vm.prank(alice);
+        manager.redeem(dealId);
+        assertEq(usdc.balanceOf(alice), 1_000e6);
+        assertEq(bond.balanceOf(alice), 0);
+        assertEq(manager.reserved(), 0);
+    }
+
+    function test_FundedDealCannotExpire() public {
+        (uint256 dealId,) = _fundedDeal();
+        vm.warp(block.timestamp + 2 days);
+        vm.expectRevert(
+            abi.encodeWithSelector(DealManager.BadStatus.selector, dealId, DealManager.Status.Active)
+        );
+        manager.expire(dealId);
+    }
+
     function test_KycListGrantsVerifiedInvestorsAndSelf() public {
         _verify(alice);
         assertEq(uint8(manager.getKycStatus(alice)), 1);
