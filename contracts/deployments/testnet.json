@@ -1,0 +1,34 @@
+{
+  "fuji": {
+    "chainId": 43113,
+    "ccipChainSelector": "14767482510784806043",
+    "ccipRouter": "0xF694E193200268f9a4868e4Aa017A0118C9a8177",
+    "link": "0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846",
+    "creMockForwarder": "0x2e7371a5d032489e4f60216d8d898a4c10805963",
+    "creRelayManual": "0x01c23dC688aB4df2E4329C6F32af5Ef7fbf1B45C"
+  },
+  "hedera": {
+    "chainId": 296,
+    "ccipChainSelector": "222782988166878823",
+    "ccipRouter": "0x802C5F84eAD128Ff36fD6a3f8a418e339f467Ce4",
+    "dealManager": "0xA074d972967c69BB5a0ae669e2d807b1744857b2",
+    "atsFactory": "0.0.9213391",
+    "atsResolver": "0.0.9212226"
+  },
+  "accounts": {
+    "operator": "0x615a13517F257f8Fa160d9F5C2E8064a1D0858AF",
+    "investors": [
+      "0x4ec712D23F0F6513305c189af0A45A3A45B28d34",
+      "0x0F3c2002493eD73540264fbFe680f06138c55F9d",
+      "0x47ef8409914442c476Aaf20b135CC7F34434dF8D",
+      "0x9A715959dDADd0377C956F28630Abf7881873107"
+    ]
+  },
+  "firstHop": {
+    "note": "Manual report through creRelayManual (forwarder = operator EOA)",
+    "fujiTx": "0x79c510c4cdd38ee5934b7bc5115e8dfe3ebb408f14abb13222848d5d2363f7c4",
+    "ccipMessageId": "0x375de8accd12c935c8b237e9741fd6737e9f13669af51572818d9d01c853e6c5",
+    "hederaTx": "0x534a35d9c19c496f3751ee4421072954d314dc51f2f06f6f29b3ede399bae2db",
+    "latencySeconds": 29
+  }
+}
