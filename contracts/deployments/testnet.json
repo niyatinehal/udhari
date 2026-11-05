@@ -16,13 +16,17 @@
     "atsFactory": "0.0.9213391",
     "atsResolver": "0.0.9212226",
     "dealManagerV1": "0xA074d972967c69BB5a0ae669e2d807b1744857b2",
-    "dealManager": "0xE843C1Bb8479b9DEb325684DF0398342c93bEa29",
     "usdc": {
       "tokenId": "0.0.429274",
       "evm": "0x0000000000000000000000000000000000068cda"
     },
     "atsFactoryEvm": "0xd1f118a40f3b02883d35909ef2517e7edd78379d",
-    "atsResolverEvm": "0xBA2D5FC2083A0b8f164c50e65d782087fBA18E0a"
+    "atsResolverEvm": "0xBA2D5FC2083A0b8f164c50e65d782087fBA18E0a",
+    "dealManagerUsdc": "0xE843C1Bb8479b9DEb325684DF0398342c93bEa29",
+    "dealManager": "0x4A39D2a52dd0E4Aa2641A63861C3d7eAD00E7587",
+    "testUsd": "0x9793ce270670a2cf1D72d80D3C6eAcBb4B420D9b",
+    "rpcFallback": "https://296.rpc.thirdweb.com",
+    "note": "dealManager uses tUSD while the Circle Hedera faucet is not delivering; dealManagerUsdc holds the expired INV-TEST-0001."
   },
   "accounts": {
     "operator": "0x615a13517F257f8Fa160d9F5C2E8064a1D0858AF",
@@ -47,12 +51,30 @@
     "hederaTx": "0x8d85141004f2c4ad55de14d240636248fe6d69c03a6ec7331df444fb3f7e7683",
     "latencySeconds": 36
   },
-  "deals": {
+  "dealsUsdcManager": {
     "1": {
       "ref": "INV-TEST-0001",
       "bond": "0x7f953019AdF57920e9D753140D9e9b4b5Fc9b98d",
       "openTx": "0x6016062d034c3b5bb52021031d30b6f1f7105644080f7bd79cdb69fdbc6533ff",
       "note": "approved and KYC via CRE ops workflow; bond deployed by DealManager through the ATS factory (7.79M gas)"
     }
+  },
+  "deals": {
+    "1": {
+      "ref": "INV-TEST-0002",
+      "bond": "0x41c46F15B4fE8Ef1eE3A03b8e8c82DD3Cd2D7E5f",
+      "openTx": "0xf51ca2c0f14e965107ca13ba6b15687c46c8c88f1e95977e78b9a18ff3fb30a3",
+      "investTx": "0xe1f7cdd1614a033c14a8cb7fdd8536600c18766a3883c912c07e71072edc3f3d"
+    }
+  },
+  "verified": {
+    "note": "Sourcify exact_match; HashScan and Snowtrace read Sourcify",
+    "hedera": [
+      "dealManager",
+      "testUsd"
+    ],
+    "fuji": [
+      "creRelay"
+    ]
   }
 }
