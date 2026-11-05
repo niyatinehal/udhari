@@ -13,9 +13,16 @@
     "chainId": 296,
     "ccipChainSelector": "222782988166878823",
     "ccipRouter": "0x802C5F84eAD128Ff36fD6a3f8a418e339f467Ce4",
-    "dealManager": "0xA074d972967c69BB5a0ae669e2d807b1744857b2",
     "atsFactory": "0.0.9213391",
-    "atsResolver": "0.0.9212226"
+    "atsResolver": "0.0.9212226",
+    "dealManagerV1": "0xA074d972967c69BB5a0ae669e2d807b1744857b2",
+    "dealManager": "0xE843C1Bb8479b9DEb325684DF0398342c93bEa29",
+    "usdc": {
+      "tokenId": "0.0.429274",
+      "evm": "0x0000000000000000000000000000000000068cda"
+    },
+    "atsFactoryEvm": "0xd1f118a40f3b02883d35909ef2517e7edd78379d",
+    "atsResolverEvm": "0xBA2D5FC2083A0b8f164c50e65d782087fBA18E0a"
   },
   "accounts": {
     "operator": "0x615a13517F257f8Fa160d9F5C2E8064a1D0858AF",
@@ -39,5 +46,13 @@
     "ccipMessageId": "0x24ecbe59b1d558188bd8881fe1f69b876b3e2cca67e65222190bb219fa203435",
     "hederaTx": "0x8d85141004f2c4ad55de14d240636248fe6d69c03a6ec7331df444fb3f7e7683",
     "latencySeconds": 36
+  },
+  "deals": {
+    "1": {
+      "ref": "INV-TEST-0001",
+      "bond": "0x7f953019AdF57920e9D753140D9e9b4b5Fc9b98d",
+      "openTx": "0x6016062d034c3b5bb52021031d30b6f1f7105644080f7bd79cdb69fdbc6533ff",
+      "note": "approved and KYC via CRE ops workflow; bond deployed by DealManager through the ATS factory (7.79M gas)"
+    }
   }
 }

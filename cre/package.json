@@ -1,7 +1,6 @@
 {
-  "name": "relay-ping",
+  "name": "cre-workflows",
   "private": true,
-  "main": "dist/main.js",
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
