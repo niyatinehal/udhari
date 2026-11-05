@@ -32,5 +32,12 @@
     "ccipMessageId": "0x375de8accd12c935c8b237e9741fd6737e9f13669af51572818d9d01c853e6c5",
     "hederaTx": "0x534a35d9c19c496f3751ee4421072954d314dc51f2f06f6f29b3ede399bae2db",
     "latencySeconds": 29
+  },
+  "creHop": {
+    "note": "cre workflow simulate relay-ping --broadcast (MockKeystoneForwarder on Fuji)",
+    "fujiTx": "0xc6385137921cbfbfa66c448d8b0ccf9e32b72d737184e9ce8d0446c5c915e5f1",
+    "ccipMessageId": "0x24ecbe59b1d558188bd8881fe1f69b876b3e2cca67e65222190bb219fa203435",
+    "hederaTx": "0x8d85141004f2c4ad55de14d240636248fe6d69c03a6ec7331df444fb3f7e7683",
+    "latencySeconds": 36
   }
 }
