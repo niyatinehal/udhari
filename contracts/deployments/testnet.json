@@ -64,7 +64,11 @@
       "ref": "INV-TEST-0002",
       "bond": "0x41c46F15B4fE8Ef1eE3A03b8e8c82DD3Cd2D7E5f",
       "openTx": "0xf51ca2c0f14e965107ca13ba6b15687c46c8c88f1e95977e78b9a18ff3fb30a3",
-      "investTx": "0xe1f7cdd1614a033c14a8cb7fdd8536600c18766a3883c912c07e71072edc3f3d"
+      "investTx": "0xe1f7cdd1614a033c14a8cb7fdd8536600c18766a3883c912c07e71072edc3f3d",
+      "lateReportFujiTx": "0xdf47751d94a33e6a1e2455872a2932f092a70c65cc971b4d30c234c81a55c3b6",
+      "repayTx": "0xe00e7ccf79807b210b64d2964de49144b5e27f15df85959d7ec662b1d3401e7a",
+      "redeemTx": "0xff7f49504a404534d00211ed1254c26035e07fb522f5dc7bcadbdaa57765ef22",
+      "lifecycle": "approved (CRE) -> bond opened -> investor verified (CRE) -> invested 9.5, business paid 9.5 -> marked late (CRE): bond paused, business frozen -> repaid 10: bond unpaused -> redeemed 10; bond supply 0, reserved 0"
     }
   },
   "verified": {
