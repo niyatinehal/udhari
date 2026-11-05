@@ -5,7 +5,6 @@ import {Test} from "forge-std/Test.sol";
 import {Client} from "@chainlink/contracts-ccip/contracts/libraries/Client.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {CreRelay} from "../src/fuji/CreRelay.sol";
-import {DealManager} from "../src/hedera/DealManager.sol";
 import {Actions} from "../src/shared/Actions.sol";
 
 contract MockLink is ERC20 {
@@ -40,24 +39,20 @@ contract MockRouter {
     }
 }
 
-contract BridgeTest is Test {
-    uint64 internal constant FUJI = 14767482510784806043;
+contract CreRelayTest is Test {
     uint64 internal constant HEDERA = 222782988166878823;
 
     MockLink internal link;
     MockRouter internal fujiRouter;
     CreRelay internal relay;
-    DealManager internal manager;
     address internal forwarder = makeAddr("forwarder");
-    address internal hederaRouter = makeAddr("hederaRouter");
+    address internal manager = makeAddr("dealManager");
 
     function setUp() public {
         link = new MockLink();
         fujiRouter = new MockRouter();
         relay = new CreRelay(address(fujiRouter), address(link), HEDERA, forwarder);
-        manager = new DealManager(hederaRouter, FUJI);
-        relay.setDestReceiver(address(manager));
-        manager.setRelay(address(relay));
+        relay.setDestReceiver(manager);
         link.transfer(address(relay), 1 ether);
     }
 
@@ -72,7 +67,7 @@ contract BridgeTest is Test {
 
         assertEq(fujiRouter.lastDest(), HEDERA);
         assertEq(fujiRouter.lastData(), report);
-        assertEq(abi.decode(fujiRouter.lastReceiver(), (address)), address(manager));
+        assertEq(abi.decode(fujiRouter.lastReceiver(), (address)), manager);
         assertEq(link.balanceOf(address(relay)), 1 ether - fujiRouter.FEE());
     }
 
@@ -80,34 +75,5 @@ contract BridgeTest is Test {
         bytes memory report = _pingReport();
         vm.expectRevert(abi.encodeWithSelector(CreRelay.NotForwarder.selector, address(this)));
         relay.onReport("", report);
-    }
-
-    function _message(uint64 source, address sender) internal view returns (Client.Any2EVMMessage memory m) {
-        m.messageId = keccak256("id");
-        m.sourceChainSelector = source;
-        m.sender = abi.encode(sender);
-        m.data = _pingReport();
-    }
-
-    function test_ManagerAppliesPingFromRelay() public {
-        vm.prank(hederaRouter);
-        manager.ccipReceive(_message(FUJI, address(relay)));
-        assertEq(manager.pingCount(), 1);
-        assertEq(manager.lastMessageId(), keccak256("id"));
-    }
-
-    function test_ManagerRejectsOtherSenders() public {
-        vm.startPrank(hederaRouter);
-        vm.expectRevert(abi.encodeWithSelector(DealManager.UnknownSource.selector, HEDERA));
-        manager.ccipReceive(_message(HEDERA, address(relay)));
-
-        vm.expectRevert(abi.encodeWithSelector(DealManager.UnknownSender.selector, address(this)));
-        manager.ccipReceive(_message(FUJI, address(this)));
-        vm.stopPrank();
-    }
-
-    function test_ManagerOnlyAcceptsRouter() public {
-        vm.expectRevert();
-        manager.ccipReceive(_message(FUJI, address(relay)));
     }
 }
