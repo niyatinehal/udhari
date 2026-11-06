@@ -16,7 +16,7 @@ export default function OpsPage() {
   const { data: runs } = useApi<Run[]>("/api/runs", 3_000);
 
   return (
-    <Page title="Operations" subtitle="The platform's view: every deal on Hedera and every Chainlink CRE run that moved one.">
+    <Page title="Admin" subtitle="The platform's view: every deal on Hedera and every Chainlink CRE run that moved one.">
       <Section header="Deals on Hedera">
         {!deals && <Empty>Loading</Empty>}
         {deals?.length === 0 && <Empty>No deals yet</Empty>}

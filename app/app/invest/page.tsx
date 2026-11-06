@@ -37,7 +37,7 @@ export default function InvestPage() {
   const open = deals?.filter((d) => d.status === "Open" && d.dueDate > now) ?? [];
 
   return (
-    <Page title="Invest" subtitle="Fund verified bills from Indian businesses. Each deal is its own bond on Hedera; you are repaid the bill's face value when the buyer pays.">
+    <Page title="Invest" subtitle="Fund verified invoices from Indian businesses. Each bill is its own token on Hedera, and you receive its full value when the customer pays.">
       {!address ? (
         <Section>
           <Empty>Connect a wallet to invest</Empty>
@@ -49,9 +49,9 @@ export default function InvestPage() {
         </>
       )}
 
-      <Section header="Open deals" footer="Units are issued 1:1 for test USD and only verified wallets can hold them.">
+      <Section header="Bills open for funding" footer="You get one token for every test dollar you put in. Only verified investors can hold them.">
         {!deals && <Empty>Loading</Empty>}
-        {deals && open.length === 0 && <Empty>No deals open right now</Empty>}
+        {deals && open.length === 0 && <Empty>No bills open for funding right now</Empty>}
         {open.map((d) => (
           <DealRow key={d.id} deal={d} canInvest={verified === true} />
         ))}
@@ -83,7 +83,7 @@ function Verification({ verified }: { verified: boolean }) {
             </IconSquare>
           }
           title="Verified on Hedera"
-          subtitle="Every deal's bond accepts this wallet"
+          subtitle="You can fund any bill on Udhari"
           detail={app?.name}
         />
       </Section>
@@ -108,7 +108,7 @@ function Verification({ verified }: { verified: boolean }) {
 
   return (
     <>
-      <Section header="Verification" footer="Chainlink CRE checks your details with the KYC provider and marks this wallet verified on Hedera. Your PAN stays off chain.">
+      <Section header="Verify your identity" footer="A one time check with our KYC provider, run by Chainlink CRE. Your PAN is never put on chain.">
         <Field label="Full name">
           <input className={inputClass} value={name} onChange={(e) => setName(e.target.value)} placeholder="As on PAN" />
         </Field>
@@ -118,14 +118,14 @@ function Verification({ verified }: { verified: boolean }) {
         {kyc && kyc.runId && <RunLog runId={kyc.runId} />}
         {kyc?.status === "rejected" && <ErrorText error={`Not verified: ${kyc.reasons?.join("; ")}`} />}
         {waitingForHedera && (
-          <div className="px-4 py-3 text-[13px] text-secondary">Approved. Waiting for the verification to reach Hedera over CCIP.</div>
+          <div className="px-4 py-3 text-[13px] text-secondary">Approved. Finishing up, about a minute.</div>
         )}
       </Section>
       <Section header="Country of residence">
         <Choices options={COUNTRIES} value={country} onChange={setCountry} />
       </Section>
       <Button loading={busy || running} disabled={!name || pan.length !== 10 || waitingForHedera} onClick={submit}>
-        Verify with Chainlink CRE
+        Verify my identity
       </Button>
       <ErrorText error={error} />
     </>
@@ -260,7 +260,7 @@ function DealRow({ deal, canInvest }: { deal: DealView; canInvest: boolean }) {
         </div>
         {!canInvest && address && <div className="text-[13px] text-secondary">Verify your wallet to invest</div>}
         <a className="text-[13px] text-tint" href={links.hashscanContract(deal.bond)} target="_blank" rel="noreferrer">
-          ATS bond {short(deal.bond)} on HashScan
+          View the token on HashScan
         </a>
         <ErrorText error={error} />
       </div>

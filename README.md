@@ -1,12 +1,18 @@
 # Udhari
 
-Your dues, paid today. *Udhari* (n.): money you are owed but have not yet received.
+Get paid today for invoices your customers pay later.
 
-Indian small businesses had ₹7.34 lakh crore stuck in delayed payments in March 2024. A civil
-contractor waits months for a client to settle a certified milestone bill; a parts supplier waits
-for a carmaker to pay an invoice. Udhari turns that receivable into a bond on Hedera, verified
-investors fund it, and the business is paid the moment it is fully funded. When the buyer pays,
-investors redeem the face value.
+*Udhari* is Hindi for goods given on credit, which is what every small supplier extends to its
+customers. Indian small businesses had ₹7.34 lakh crore stuck in delayed payments in March 2024.
+A clothing brand delivers its first lot to a retailer that pays in 30 days, while the next lot
+needs fabric now; a civil contractor waits months for a client to settle a certified milestone
+bill. Udhari turns that receivable into a bond on Hedera, verified investors fund it, and the
+business is paid the moment it is fully funded. When the buyer pays, investors redeem the face
+value.
+
+The app speaks to the business in plain words: an invoice is checked, turned into a token, funded
+and paid. Each bill card has a **Technical details** toggle that shows the CRE run, every check
+with its raw evidence, the Fuji transaction, the CCIP message and the bond's ISIN and contract.
 
 Nothing is taken on the platform's word. A Chainlink CRE workflow checks the bill against the GST
 e-invoice registry, pulls the buyer's credit report and an FX rate, and reads Hedera to make sure
@@ -16,8 +22,8 @@ Chainlink CCIP, where a contract enforces the policy again and issues an ATS bon
 ## How a bill moves
 
 1. **The business registers.** It enters its GSTIN, its registration comes from the GST network,
-   and it uploads its KYB documents (GST certificate, PAN, cancelled cheque). Documents are stored
-   by content hash.
+   and it uploads its KYB documents (GST certificate and PAN). Payouts go to its wallet, so no
+   bank proof is needed. Documents are stored by content hash.
 2. **It raises a bill** against an e-invoice already registered on the GST Invoice Registration
    Portal (IRP), with the due date, and uploads the certified bill. Nothing is needed from the
    buyer: the e-invoice is the record of what it owes.
@@ -94,11 +100,28 @@ and written on Fuji:
 Contracts are verified on Sourcify. Every address and transaction is recorded in
 [`contracts/deployments/testnet.json`](contracts/deployments/testnet.json).
 
-### One deal, end to end
+### The demo video, end to end
 
-Deal #6, the one in the demo video: Vedant Electricals & Controls registers from scratch, then
-finances its certified RA bill 7 to Arcadia Realty, ₹1,18,000 ($1,248.18 at ₹94.54/USD), due in
-15 minutes so the late path could run live. Every step was driven from the web app.
+Deal #7: Indigo Lane, a Jaipur clothing brand, has just delivered its first lot of 200 kurtas to
+Vastrakala Retail, which pays in 30 days. It registers from scratch, uploads the signed invoice
+for ₹1,57,500 ($1,666.01 at ₹94.54/USD), and is paid ₹1,56,335 the same day for a 0.74% fee.
+Every step was driven from the web app.
+
+| Step | Where | Transaction |
+|---|---|---|
+| Indigo Lane registers: GSTIN looked up, GST certificate and PAN uploaded | App | web app |
+| CRE checks the bill (8 checks, grade A, 0.74%) and writes the report | Fuji | [`0x84beeb0f…`](https://testnet.snowtrace.io/tx/0x84beeb0f0aceff824e0f4ca927e726025988f7e4880d45bceeba39de3abe44a9) |
+| CCIP delivers the approval | Fuji → Hedera | [`0xa092a006…`](https://ccip.chain.link/msg/0xa092a006bc3ba955c7d8b261a7eaef80407af2706fa83539fc77b654bf2ec23e) |
+| The bill becomes ATS bond BILL7 (ISIN ZZ0000000073) | Hedera | [`0xe66ac017…`](https://hashscan.io/testnet/transaction/0xe66ac017f3f06659602f69e1247c32c7bb17dd0e1336c7b85571636030a000fd) |
+| A verified investor funds it; the business is paid in the same transaction | Hedera | [`0xe8f9617c…`](https://hashscan.io/testnet/transaction/0xe8f9617ca16dee5ef6f7f9351a4331ee084f78a5d36dcc740eb3fa96f55e7d3f) |
+| Vastrakala pays the invoice | Hedera | [`0xaba36ae3…`](https://hashscan.io/testnet/transaction/0xaba36ae3a748c53d2937d3e8ec82573d6aa81f0e20b56bfa6c7e21285c51dae2) |
+| The investor redeems the face value; bond supply back to zero | Hedera | [`0xb8652004…`](https://hashscan.io/testnet/transaction/0xb8652004e35a67cfa190f3ec40387eb6ce68166b5c35ba66cb39505defd1af6c) |
+
+### The late path, end to end
+
+Deal #6: Vedant Electricals & Controls registers from scratch, then finances its certified RA
+bill 7 to Arcadia Realty, ₹1,18,000 ($1,248.18 at ₹94.54/USD), due in 15 minutes so the late
+path could run live. Every step was driven from the web app.
 
 | Step | Where | Transaction |
 |---|---|---|
@@ -160,4 +183,4 @@ one by hand.
 - `contracts/`: Foundry. `src/fuji` (CreRelay), `src/hedera` (DealManager, ATS interfaces, ISIN),
   `src/testnet` (Test USD), `test/` (22 tests).
 - `cre/`: CRE project with the underwrite, kyc, monitor, relay-ping and ops workflows.
-- `app/`: Next.js app with business, buyer, investor and operations views, and the mock services.
+- `app/`: Next.js app with business, buyer, investor and admin views, and the mock services.

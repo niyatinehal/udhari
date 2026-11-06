@@ -21,12 +21,12 @@ export default function BuyerPage() {
   const settled = mine.filter((d) => d.status === "Repaid");
 
   return (
-    <Page title="Buyer" subtitle="Pay your suppliers' financed bills when they fall due. Your terms do not change; the payment goes to the investors who paid your supplier early.">
+    <Page title="Pay a bill" subtitle="Pay your suppliers' invoices when they fall due. Your terms do not change; the payment goes to the investors who paid your supplier early.">
       <CompanySection role="buyer" state={company} />
 
       {gstin && (
-        <Section header="To pay" footer="Payment goes to the deal on Hedera; investors redeem from it.">
-          {toPay.length === 0 && <Empty>No financed bills due</Empty>}
+        <Section header="To pay" footer="Your payment goes to the investors who funded the bill.">
+          {toPay.length === 0 && <Empty>Nothing to pay right now</Empty>}
           {toPay.map((d) => (
             <PayRow key={d.id} deal={d} />
           ))}

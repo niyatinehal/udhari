@@ -1,25 +1,16 @@
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Buildings,
-  Certificate,
-  HandCoins,
-  LinkSimple,
-  PauseCircle,
-  Plus,
-  ShieldCheck,
-} from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, ArrowUpRight, Buildings, HandCoins, LinkSimple, Percent, Plus, ShieldCheck, Storefront } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import { HeroVisual } from "@/components/landing/hero-visual";
 import { LiveStats } from "@/components/landing/live-stats";
 import { Reveal } from "@/components/landing/reveal";
 import { Tagline } from "@/components/landing/tagline";
+import { APP_NAME } from "@/lib/brand";
 import { addresses, links } from "@/lib/chain";
 
 const EASE = "transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]";
 const FOCUS = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tint focus-visible:ring-offset-2 focus-visible:ring-offset-bg";
 
-function PrimaryCta({ children = "Raise your first bill" }: { children?: React.ReactNode }) {
+function PrimaryCta({ children = "Get paid for an invoice" }: { children?: React.ReactNode }) {
   return (
     <Link
       href="/business"
@@ -45,53 +36,53 @@ const BENEFITS = [
   {
     icon: HandCoins,
     tone: "bg-[#34c759]",
-    title: "Paid when the bill is funded",
-    body: "The investment that completes funding pays your business in the same transaction. No payout run, no waiting for the due date.",
+    title: "Money the moment it is funded",
+    body: "As soon as investors fund your bill, the money reaches your wallet. No waiting for the due date.",
   },
   {
     icon: ShieldCheck,
     tone: "bg-[#5856d6]",
-    title: "Nothing taken on trust",
-    body: "A Chainlink CRE workflow checks the GST registry, your KYB, the buyer's credit, the exchange rate and Hedera history. Eight checks, run by the DON itself.",
+    title: "Not a loan",
+    body: "You sell one invoice your customer already owes. No collateral and no guarantor: the invoice is the security.",
   },
   {
-    icon: Certificate,
+    icon: Storefront,
     tone: "bg-[#af52de]",
-    title: "One bond per bill",
-    body: "Each bill becomes its own Hedera ATS bond with an ISIN, backed by the document you uploaded. Only verified investors can hold it.",
+    title: "Nothing changes for your customer",
+    body: "They pay the invoice on its due date, as they always do. The GST portal already records what they owe.",
   },
   {
-    icon: PauseCircle,
+    icon: Percent,
     tone: "bg-[#ff9500]",
-    title: "Late bills are contained",
-    body: "If a buyer misses the due date, the CRE monitor pauses that bond and blocks new bills from the business until it is paid.",
+    title: "A fee you see upfront",
+    body: "Before anyone invests you see exactly what you get. A 30 day invoice to a well rated customer costs about 0.74%.",
   },
 ];
 
 const STEPS = [
   {
-    title: "Register and raise a bill",
-    body: "Enter your GSTIN, upload your KYB documents, then pick an e-invoice from the GST registry and upload the certified bill.",
+    title: "Sign up with your GSTIN",
+    body: "We fetch your business from the GST portal. Upload your GST certificate and PAN, and you are verified.",
   },
   {
-    title: "Chainlink underwrites it",
-    body: "CRE grades the buyer and prices the discount for the days left. CCIP carries the approval from Avalanche Fuji to Hedera in about 30 seconds.",
+    title: "Pick an invoice",
+    body: "Choose one your customer has not paid, tell us when they will pay, and upload the signed copy. We check it in about a minute.",
   },
   {
-    title: "Investors fund the bond",
-    body: "You are paid on full funding. On the due date your client pays the bill and investors redeem its face value.",
+    title: "Get paid",
+    body: "Your bill becomes a token investors can buy. Once it is funded the money is yours, and your customer pays on the due date.",
   },
 ];
 
 // Deal #6 from the demo, every step a public testnet transaction.
 const PROOF = [
-  { step: "CRE underwrites the bill and signs a report", chain: "Avalanche Fuji", url: "https://testnet.snowtrace.io/tx/0x70a17f9c5b4d89516485fdf85da9b74952d7e7329e314af51f03c7e2a579c2bf" },
-  { step: "CCIP delivers the approval", chain: "Fuji to Hedera", url: "https://ccip.chain.link/msg/0xea3d125e2f406bf2337415c5518a3b7bc720e3133c93d9fca01f3765ca24aa6b" },
-  { step: "The bill becomes ATS bond BILL6", chain: "Hedera", url: "https://hashscan.io/testnet/transaction/0xa932b8c28a177009499e354556299ba41245b35c6e094b0ccf2c45c55986f41f" },
-  { step: "An investor funds it and the business is paid", chain: "Hedera", url: "https://hashscan.io/testnet/transaction/0xb64ca93b615225a3b2c063dafda245742ff3a9935de016bf0fa52047bd806353" },
-  { step: "The CRE monitor marks it late, the bond pauses", chain: "Fuji to Hedera", url: "https://ccip.chain.link/msg/0x84ce6055e05330b4c3d97d40abbf13edb7ae5621117752baf9a800c0a4bd25ba" },
-  { step: "The buyer pays, the bond unpauses", chain: "Hedera", url: "https://hashscan.io/testnet/transaction/0x90530124af72910cdeb2d4e27cbf94b139a9f847e5fd94a36a7a513c393c3982" },
-  { step: "The investor redeems the face value", chain: "Hedera", url: "https://hashscan.io/testnet/transaction/0x57ccb80e7ce67169f823d17e4a94e76c17a498176da02a138aff3d651da06d61" },
+  { step: "Udhari checks the bill and approves it", tech: "Chainlink CRE · Avalanche Fuji", url: "https://testnet.snowtrace.io/tx/0x70a17f9c5b4d89516485fdf85da9b74952d7e7329e314af51f03c7e2a579c2bf" },
+  { step: "The approval reaches Hedera", tech: "Chainlink CCIP · Fuji to Hedera", url: "https://ccip.chain.link/msg/0xea3d125e2f406bf2337415c5518a3b7bc720e3133c93d9fca01f3765ca24aa6b" },
+  { step: "The bill becomes a token", tech: "Hedera Asset Tokenization Studio · bond BILL6", url: "https://hashscan.io/testnet/transaction/0xa932b8c28a177009499e354556299ba41245b35c6e094b0ccf2c45c55986f41f" },
+  { step: "An investor funds it and the business is paid", tech: "Hedera", url: "https://hashscan.io/testnet/transaction/0xb64ca93b615225a3b2c063dafda245742ff3a9935de016bf0fa52047bd806353" },
+  { step: "The payment is late, so the token is paused", tech: "Chainlink CRE monitor · CCIP", url: "https://ccip.chain.link/msg/0x84ce6055e05330b4c3d97d40abbf13edb7ae5621117752baf9a800c0a4bd25ba" },
+  { step: "The customer pays and the token resumes", tech: "Hedera", url: "https://hashscan.io/testnet/transaction/0x90530124af72910cdeb2d4e27cbf94b139a9f847e5fd94a36a7a513c393c3982" },
+  { step: "The investor is paid back in full", tech: "Hedera", url: "https://hashscan.io/testnet/transaction/0x57ccb80e7ce67169f823d17e4a94e76c17a498176da02a138aff3d651da06d61" },
 ];
 
 const GRADES = [
@@ -103,36 +94,36 @@ const GRADES = [
 
 const FAQ = [
   {
+    q: "Is this a loan?",
+    a: "No. You sell the right to be paid for one invoice. Investors pay you now and are paid back when your customer pays it.",
+  },
+  {
+    q: "What does my customer have to do?",
+    a: "Nothing new. The GST e-invoice already records what they owe, and they pay it on the due date as usual. In production we also confirm they accepted the invoice on the GST portal.",
+  },
+  {
+    q: "How much does it cost?",
+    a: "It depends on your customer's payment record and the days left. Well rated customers are priced at 9% a year, so a 30 day invoice costs about 0.74% of its value. You see the exact amount before anyone invests.",
+  },
+  {
+    q: "When do I get the money?",
+    a: "The moment investors fully fund your bill, the money arrives in your wallet.",
+  },
+  {
+    q: "What if my customer pays late?",
+    a: "We mark the bill late and put new bills from your business on hold until your customer pays. When they do, everything resumes.",
+  },
+  {
+    q: "Can one invoice be funded twice?",
+    a: "No. Every e-invoice has a unique number from the GST portal, and once a bill is funded that number can never be used again.",
+  },
+  {
     q: "Is this real money?",
-    a: "Not yet. Everything runs on Hedera testnet and Avalanche Fuji, with test USD in place of USDC. Every transaction is real and public, so you can follow each bill on HashScan.",
+    a: `Not yet. ${APP_NAME} runs on Hedera testnet with test dollars. Every step is a real, public transaction you can open.`,
   },
   {
-    q: "What does my client have to do?",
-    a: "Nothing new. The GST e-invoice is the record of what they owe, and they pay the bill as they normally would. In production we also read their acceptance of the invoice from the GST Invoice Management System.",
-  },
-  {
-    q: "How is the discount set?",
-    a: "From the buyer's credit grade and the days left until the due date. Grade A bills are priced at 9% a year, so a bill due in 30 days costs about 0.74% of its value.",
-  },
-  {
-    q: "Who can invest?",
-    a: "Anyone who passes KYC. The check runs as a Chainlink CRE workflow and marks the wallet verified on Hedera, and every bill's bond refuses wallets that are not verified.",
-  },
-  {
-    q: "What happens if the buyer pays late?",
-    a: "The CRE monitor marks the bill late. Its bond is paused and the business cannot raise new bills until the buyer pays, which unpauses everything.",
-  },
-  {
-    q: "What if a bill is not fully funded?",
-    a: "When its due date passes the deal closes and investors get their money back one for one. The business owes nothing.",
-  },
-  {
-    q: "Can the same invoice be financed twice?",
-    a: "No. The hash of its IRN, the e-invoice's national identifier, is recorded on Hedera, and the contract refuses a second approval for it.",
-  },
-  {
-    q: "Why Hedera and Chainlink?",
-    a: "Hedera's Asset Tokenization Studio issues each bill as a compliant bond with an ISIN. Chainlink CRE fetches and checks the real world, and CCIP brings its decisions to Hedera.",
+    q: "What runs under the hood?",
+    a: "Chainlink CRE checks each bill against the GST portal, a credit bureau and an exchange rate. Chainlink CCIP carries the decision from Avalanche Fuji to Hedera, where the Asset Tokenization Studio issues the bill as a bond token with an ISIN.",
   },
 ];
 
@@ -143,12 +134,12 @@ export default function Home() {
       <section className="px-4 pb-24 pt-32 sm:pt-40">
         <Reveal className="mx-auto flex max-w-[680px] flex-col items-center text-center">
           <h1 className="hero-gradient text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-            Get paid today for bills <br className="hidden sm:inline" />
-            your clients pay in 90 days
+            Get paid today for invoices <br className="hidden sm:inline" />
+            your customers pay later
           </h1>
           <p className="mt-6 max-w-[680px] text-lg text-secondary text-pretty">
-            Bills turns a GST e-invoice into a bond on Hedera. Verified investors fund it, and your business is paid the moment it is fully
-            funded. Chainlink checks every bill before anyone puts money in.
+            {APP_NAME} turns your GST invoice into a digital token that investors buy. You get the money now, and they are paid when your
+            customer pays.
           </p>
           <div className="mt-8">
             <PrimaryCta />
@@ -160,20 +151,14 @@ export default function Home() {
         <Reveal delay={150} className="mx-auto mt-16 max-w-3xl px-2">
           <HeroVisual />
         </Reveal>
-        <Reveal delay={250} className="mx-auto mt-24 flex max-w-3xl flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm font-semibold text-tertiary">
-          <span>Hedera Asset Tokenization Studio</span>
-          <span>Chainlink CRE</span>
-          <span>Chainlink CCIP</span>
-          <span>Avalanche Fuji</span>
-        </Reveal>
       </section>
 
       {/* Problem */}
       <section className="px-4 py-24">
         <Reveal>
           <SectionHeading eyebrow="The problem" title="The law says 45 days. Large buyers take months.">
-            Under the MSMED Act, buyers must pay small suppliers within 45 days. A contractor finishes a floor, the client certifies the
-            bill, and the money arrives after the next project needed it.
+            Under the MSMED Act, buyers must pay small suppliers within 45 days. A clothing brand delivers its first lot to a retailer,
+            and the payment arrives after the next lot needed fabric.
           </SectionHeading>
         </Reveal>
         <div className="mx-auto mt-12 grid max-w-4xl gap-4 sm:grid-cols-3">
@@ -194,13 +179,13 @@ export default function Home() {
 
       {/* Tagline */}
       <section className="px-4 py-24 text-center">
-        <Tagline lines={["Your client pays in ninety days.", "You get paid today,", "and investors earn the wait."]} />
+        <Tagline lines={["Your customer pays next month.", "You get paid today,", "and investors earn the wait."]} />
       </section>
 
       {/* Benefits */}
       <section className="px-4 py-24">
         <Reveal>
-          <SectionHeading eyebrow="For businesses" title="Working capital from bills you already have" />
+          <SectionHeading eyebrow="For businesses" title="Working capital from invoices you already have" />
         </Reveal>
         <div className="mx-auto mt-12 grid max-w-4xl gap-4 sm:grid-cols-2">
           {BENEFITS.map((b, i) => (
@@ -220,7 +205,7 @@ export default function Home() {
       {/* How it works */}
       <section className="px-4 py-24">
         <Reveal>
-          <SectionHeading eyebrow="How it works" title="From e-invoice to cash in three steps" />
+          <SectionHeading eyebrow="How it works" title="From invoice to money in three steps" />
         </Reveal>
         <ol className="mx-auto mt-12 grid max-w-4xl gap-4 sm:grid-cols-3">
           {STEPS.map((s, i) => (
@@ -238,8 +223,8 @@ export default function Home() {
       {/* Proof */}
       <section className="px-4 py-24">
         <Reveal>
-          <SectionHeading eyebrow="Proof" title="One bill, end to end, on testnet">
-            Vedant Electricals financed its ₹1,18,000 RA bill to Arcadia Realty. Every step below is a public transaction.
+          <SectionHeading eyebrow="Proof" title="A real bill, start to finish">
+            Vedant Electricals got paid early on a ₹1,18,000 bill to Arcadia Realty. Every step below is a public record you can open.
           </SectionHeading>
         </Reveal>
         <Reveal className="mx-auto mt-12 max-w-3xl">
@@ -255,7 +240,7 @@ export default function Home() {
                   <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-fill text-sm font-semibold">{i + 1}</span>
                   <span className="min-w-0 flex-1">
                     <span className="block text-base font-medium">{p.step}</span>
-                    <span className="block text-sm text-secondary">{p.chain}</span>
+                    <span className="block text-sm text-secondary">{p.tech}</span>
                   </span>
                   <ArrowUpRight className="size-5 shrink-0 text-tertiary" aria-hidden />
                 </a>
@@ -270,22 +255,22 @@ export default function Home() {
         <div className="mx-auto grid max-w-4xl items-center gap-12 sm:grid-cols-2">
           <Reveal>
             <p className="text-sm font-semibold text-tint">For investors</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">Bills that mature in weeks, priced by credit</h2>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">Invoices that pay out in weeks, priced by credit</h2>
             <p className="mt-4 text-lg text-secondary text-pretty">
-              Fund verified bills from Indian businesses and receive the face value when the buyer pays. Each bill is its own bond, so you
-              choose exactly what you hold.
+              Fund verified invoices from Indian businesses and receive their full value when the customer pays. Each bill is its own
+              token, so you choose exactly what you hold.
             </p>
             <Link
               href="/invest"
               className={`mt-8 inline-flex items-center gap-2 rounded-full bg-fill px-3 py-2 text-base font-semibold text-tint hover:-translate-y-px active:scale-[0.98] ${EASE} ${FOCUS}`}
             >
-              Browse open deals
+              Browse open bills
               <ArrowRight weight="bold" className="size-4" aria-hidden />
             </Link>
           </Reveal>
           <Reveal delay={150}>
             <div className="rounded-2xl bg-card p-2">
-              <p className="px-4 pb-2 pt-4 text-sm text-secondary">Annual rate by the buyer&apos;s grade</p>
+              <p className="px-4 pb-2 pt-4 text-sm text-secondary">Yearly return by the customer&apos;s grade</p>
               {GRADES.map((g) => (
                 <div key={g.grade} className="flex items-center gap-4 rounded-lg px-4 py-3">
                   <span className={`grid size-8 place-items-center rounded-lg text-sm font-semibold text-white ${g.tone}`}>{g.grade}</span>
@@ -293,7 +278,7 @@ export default function Home() {
                   <span className="text-base font-semibold">{g.rate}</span>
                 </div>
               ))}
-              <p className="px-4 pb-4 pt-2 text-sm text-secondary">Grade E buyers are declined.</p>
+              <p className="px-4 pb-4 pt-2 text-sm text-secondary">Grade E customers are declined.</p>
             </div>
           </Reveal>
         </div>
@@ -329,8 +314,7 @@ export default function Home() {
           </span>
           <h2 className="mt-6 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">Stop waiting on your client&apos;s payment cycle</h2>
           <p className="mt-4 text-lg text-secondary text-pretty">
-            Register with your GSTIN, raise a bill against an e-invoice, and get paid once it is funded. If it is not funded by its due date,
-            nothing changes for you.
+            Register with your GSTIN, pick an invoice, and get paid once it is funded. If it is not funded, nothing changes for you.
           </p>
           <div className="mt-8">
             <PrimaryCta />
@@ -340,7 +324,10 @@ export default function Home() {
 
       <footer className="border-t border-separator px-4 py-12">
         <div className="mx-auto flex max-w-4xl flex-col gap-6 text-sm text-secondary sm:flex-row sm:items-center sm:justify-between">
-          <p>Bills · ETHGlobal Mumbai 2026 · Testnet demo, no real money</p>
+          <div className="flex flex-col gap-1">
+            <p>{APP_NAME} · ETHGlobal Mumbai 2026 · Testnet demo, no real money</p>
+            <p>Built on Hedera Asset Tokenization Studio, Chainlink CRE and Chainlink CCIP</p>
+          </div>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             <a className={`inline-flex items-center gap-1 hover:text-label ${FOCUS}`} href={links.hashscanContract(addresses.dealManager)} target="_blank" rel="noreferrer">
               <LinkSimple className="size-4" aria-hidden /> DealManager on HashScan

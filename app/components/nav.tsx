@@ -14,7 +14,7 @@ const tabs = [
   { href: "/business", label: "Business" },
   { href: "/buyer", label: "Buyer" },
   { href: "/invest", label: "Invest" },
-  { href: "/ops", label: "Operations" },
+  { href: "/ops", label: "Admin" },
 ];
 
 const EASE = "transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]";
@@ -38,7 +38,7 @@ export function Nav() {
       <header className="pointer-events-none fixed inset-x-0 top-0 z-40 flex justify-center px-4 pt-6">
         <div className="pointer-events-auto flex h-12 w-max max-w-full items-center gap-1 rounded-full border border-separator bg-card/70 py-1 pl-2 pr-1 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.08)] backdrop-blur-xl">
           <Link href="/" onClick={() => setOpen(false)} className={`flex items-center gap-2 rounded-full pr-2 text-sm font-semibold ${FOCUS}`}>
-            <span className="grid size-8 place-items-center rounded-full bg-tint text-sm font-bold text-white">B</span>
+            <span className="grid size-8 place-items-center rounded-full bg-tint text-sm font-bold text-white">{APP_NAME[0]}</span>
             {APP_NAME}
           </Link>
           <nav className="hidden items-center gap-1 sm:flex" aria-label="Main">

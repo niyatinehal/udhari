@@ -32,6 +32,7 @@ export type DealView = {
   sellerGstin: string | null;
   seller: string | null;
   kind: string | null;
+  amountPaise: number | null;
 };
 
 const dealCache = globalThis as unknown as { deals?: { at: number; value: Promise<DealView[]> } };
@@ -78,6 +79,7 @@ const readDeals = async (): Promise<DealView[]> => {
       sellerGstin: bill?.seller.gstin ?? null,
       seller: bill?.seller.name ?? null,
       kind: bill?.kind ?? null,
+      amountPaise: bill?.amountPaise ?? null,
     };
   });
 };

@@ -1,13 +1,21 @@
 import { Certificate, CheckCircle } from "@phosphor-icons/react/dist/ssr";
 
-// Deal #6 as it ran on testnet: Vedant Electricals' RA bill 7 to Arcadia Realty.
+// Deal #7 as it ran on testnet: Indigo Lane's first lot to Vastrakala Retail, from the demo video.
+const BILL = {
+  customer: "Vastrakala Retail Pvt Ltd",
+  line: "IL/26-27/0001 · First lot: 200 hand block printed kurtas",
+  amount: "₹1,57,500",
+  token: "Bill IL/26-27/0001",
+  funded: "$1,653.68",
+  paysOut: "6 Dec",
+};
+
 const STEPS = [
-  { label: "Bill raised", detail: "VEC-RA-7-certified.pdf · due 6 Nov" },
-  { label: "Underwritten by Chainlink CRE", detail: "8 checks passed · grade A · 0.25% discount" },
-  { label: "Approved on Hedera", detail: "Delivered over CCIP from Avalanche Fuji" },
-  { label: "Tokenized as an ATS bond", detail: "BILL6 · one bond for this bill" },
-  { label: "Funded", detail: "$1,245.06 paid to Vedant Electricals" },
-  { label: "Repaid by Arcadia Realty", detail: "$1,248.18 redeemed by investors" },
+  { label: "Invoice uploaded", detail: "IL-26-27-0001-signed.pdf · customer pays in 30 days" },
+  { label: "Approved", detail: "All 8 checks passed · grade A customer" },
+  { label: "Turned into a token", detail: "Investors can buy it on Hedera" },
+  { label: "Paid to you", detail: "₹1,56,335 sent the moment it was funded" },
+  { label: "Customer pays", detail: "Vastrakala paid in full. All done." },
 ];
 
 /** A still of the product: one bill's journey and the token it became. */
@@ -18,12 +26,12 @@ export function HeroVisual() {
         <div className="rounded-lg p-4">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <p className="text-base font-semibold">VEC/RA/26-27/007</p>
-              <p className="truncate text-sm text-secondary">RA bill 7: electrical works, Tower B, Thane West</p>
+              <p className="text-base font-semibold">{BILL.customer}</p>
+              <p className="truncate text-sm text-secondary">{BILL.line}</p>
             </div>
             <div className="shrink-0 text-right">
-              <p className="text-base font-semibold">₹1,18,000</p>
-              <p className="text-sm text-secondary">Milestone bill</p>
+              <p className="text-base font-semibold">{BILL.amount}</p>
+              <p className="text-sm text-secondary">Invoice</p>
             </div>
           </div>
           <ol className="mt-4 flex flex-col gap-3">
@@ -45,18 +53,18 @@ export function HeroVisual() {
           <span className="grid size-8 place-items-center rounded-lg bg-[#af52de] text-white">
             <Certificate weight="bold" className="size-5" aria-hidden />
           </span>
-          <div>
-            <p className="text-sm font-semibold">Bill VEC/RA/26-27/007</p>
-            <p className="text-xs text-secondary">Hedera ATS bond</p>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold">{BILL.token}</p>
+            <p className="text-xs text-secondary">Digital token on Hedera</p>
           </div>
         </div>
         <dl className="mt-3 grid grid-cols-2 gap-y-1 text-xs">
-          <dt className="text-secondary">Symbol</dt>
-          <dd className="text-right font-medium">BILL6</dd>
-          <dt className="text-secondary">ISIN</dt>
-          <dd className="text-right font-mono">ZZ0000000065</dd>
-          <dt className="text-secondary">Units</dt>
-          <dd className="text-right font-medium">$1,245.06</dd>
+          <dt className="text-secondary">Bought by investors</dt>
+          <dd className="text-right font-medium">{BILL.funded}</dd>
+          <dt className="text-secondary">Pays out on</dt>
+          <dd className="text-right font-medium">{BILL.paysOut}</dd>
+          <dt className="text-secondary">Backed by</dt>
+          <dd className="truncate text-right font-medium">the signed bill</dd>
         </dl>
       </div>
     </div>

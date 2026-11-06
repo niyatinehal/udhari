@@ -153,11 +153,10 @@
       "redeemTx": "0xc0839814bb795dffff3faad1cfcdae29065cd32d3420cb54886753957428c9d9",
       "lifecycle": "RA bill 5, Rs 96,400 -> $1,019.70 face: approved (CRE, grade A, no buyer step) -> bond issued -> investor verified (CRE) and funded 1,017.15, business paid -> CRE monitor marked late: bond paused, business frozen -> repaid late: unpaused, unfrozen -> redeemed"
     },
-    "note": "DealManager v4, all through the web app. creFujiTx is the CRE report on Fuji; ccipMessageId carries it to Hedera.",
     "6": {
       "ref": "VEC/RA/26-27/007",
       "bill": "B-0009",
-      "note": "the deal in the demo video: seller registered from scratch with KYB documents",
+      "note": "the deal in the earlier demo video, with the late payment path: seller registered from scratch with KYB documents",
       "bond": "0x4E4Ef78F22d5b5DB50C94D658DEe3ccEeeEDB39C",
       "underwrite": {
         "creFujiTx": "0x70a17f9c5b4d89516485fdf85da9b74952d7e7329e314af51f03c7e2a579c2bf",
@@ -176,7 +175,23 @@
       "repayTx": "0x90530124af72910cdeb2d4e27cbf94b139a9f847e5fd94a36a7a513c393c3982",
       "redeemTx": "0x57ccb80e7ce67169f823d17e4a94e76c17a498176da02a138aff3d651da06d61",
       "lifecycle": "Vedant Electricals registered (GSTIN lookup, 3 KYB documents) -> RA bill 7, Rs 1,18,000 -> $1,248.18 face, certified bill uploaded: approved (CRE, 8 checks, grade A) -> ATS bond BILL6, ISIN ZZ0000000065 -> investor verified (CRE) and funded 1,245.06, business paid -> CRE monitor marked late: bond paused, business frozen -> repaid late: unpaused, unfrozen -> redeemed"
-    }
+    },
+    "7": {
+      "ref": "IL/26-27/0001",
+      "bill": "B-0011",
+      "note": "the deal in the demo video: Indigo Lane, a clothing brand, funds the 30 day invoice for its first lot",
+      "bond": "0x56AD4104715479c5F1833965A8c6fE2EbAE222c9",
+      "underwrite": {
+        "creFujiTx": "0x84beeb0f0aceff824e0f4ca927e726025988f7e4880d45bceeba39de3abe44a9",
+        "ccipMessageId": "0xa092a006bc3ba955c7d8b261a7eaef80407af2706fa83539fc77b654bf2ec23e"
+      },
+      "openTx": "0xe66ac017f3f06659602f69e1247c32c7bb17dd0e1336c7b85571636030a000fd",
+      "investTx": "0xe8f9617ca16dee5ef6f7f9351a4331ee084f78a5d36dcc740eb3fa96f55e7d3f",
+      "repayTx": "0xaba36ae3a748c53d2937d3e8ec82573d6aa81f0e20b56bfa6c7e21285c51dae2",
+      "redeemTx": "0xb8652004e35a67cfa190f3ec40387eb6ce68166b5c35ba66cb39505defd1af6c",
+      "lifecycle": "Indigo Lane registered (GSTIN lookup, 2 KYB documents) -> invoice IL/26-27/0001, Rs 1,57,500 for 200 kurtas, due in 30 days -> $1,666.01 face at Rs 94.54/USD, signed invoice uploaded: approved (CRE, 8 checks, grade A, 0.74% discount) -> ATS bond BILL7, ISIN ZZ0000000073 -> verified investor funded $1,653.68, business paid -> buyer repaid early -> redeemed"
+    },
+    "note": "DealManager v4, all through the web app. creFujiTx is the CRE report on Fuji; ccipMessageId carries it to Hedera."
   },
   "verified": {
     "note": "Sourcify exact_match; HashScan and Snowtrace read Sourcify",

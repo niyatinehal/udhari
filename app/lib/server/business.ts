@@ -6,7 +6,6 @@ import { read, type Business } from "./store";
 export const REQUIRED_DOCUMENTS = [
   { kind: "gst", label: "GST registration certificate" },
   { kind: "pan", label: "PAN card of the business" },
-  { kind: "bank", label: "Cancelled cheque" },
 ] as const;
 
 /**

@@ -19,15 +19,16 @@ type Token = {
   irn: string | null;
 };
 
-/** The bill as a token: the deal's ATS bond read from Hedera, and the documents behind it. */
-export function TokenCard({ dealId }: { dealId: number }) {
+/**
+ * The bill as a token: the deal's ATS bond read from Hedera, and the document behind it. The
+ * identifiers a developer would check stay hidden until `technical` is on.
+ */
+export function TokenCard({ dealId, technical = false }: { dealId: number; technical?: boolean }) {
   const { data: token } = useApi<Token>(`/api/deals/${dealId}/token`, 15_000);
   if (!token) return null;
   const rows: [string, React.ReactNode][] = [
-    ["Symbol", token.symbol],
-    ["ISIN", token.isin],
-    ["Units issued", `${usd(token.totalSupply)} of ${usd(token.maxSupply)}`],
-    ["Matures", date(token.maturity)],
+    ["Bought by investors", `${usd(token.totalSupply)} of ${usd(token.maxSupply)}`],
+    ["Pays out on", date(token.maturity)],
     [
       "Backed by",
       token.document ? (
@@ -38,24 +39,30 @@ export function TokenCard({ dealId }: { dealId: number }) {
         "the bill"
       ),
     ],
-    ["Document hash", <span key="d" className="font-mono">{short(token.document?.hash ?? "")}</span>],
-    ["E-invoice on chain", <span key="i" className="font-mono">{short(token.docHash)}</span>],
-    [
-      "Contract",
-      <a key="c" className="font-mono text-tint" href={links.hashscanContract(token.address)} target="_blank" rel="noreferrer">
-        {short(token.address)}
-      </a>,
-    ],
   ];
+  if (technical) {
+    rows.push(
+      ["Symbol", token.symbol],
+      ["ISIN", token.isin],
+      ["Document hash", <span key="d" className="font-mono">{short(token.document?.hash ?? "")}</span>],
+      ["E-invoice on chain", <span key="i" className="font-mono">{short(token.docHash)}</span>],
+      [
+        "Contract",
+        <a key="c" className="font-mono text-tint" href={links.hashscanContract(token.address)} target="_blank" rel="noreferrer">
+          {short(token.address)}
+        </a>,
+      ],
+    );
+  }
   return (
-    <div className="mt-2 overflow-hidden rounded-xl border border-separator">
+    <div data-token className="mt-2 overflow-hidden rounded-xl border border-separator">
       <div className="flex items-center gap-3 px-3 py-2.5">
         <IconSquare tone="purple">
           <GlobeIcon />
         </IconSquare>
         <div className="min-w-0">
           <div className="truncate text-[15px] font-semibold">{token.name}</div>
-          <div className="text-[13px] text-secondary">Hedera Asset Tokenization Studio bond</div>
+          <div className="text-[13px] text-secondary">{technical ? "Hedera Asset Tokenization Studio bond" : "Digital token on Hedera"}</div>
         </div>
       </div>
       <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 border-t border-separator px-3 py-2.5 text-[13px]">

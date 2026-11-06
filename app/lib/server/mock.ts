@@ -22,9 +22,12 @@ export const companies: Company[] = [
   { gstin: "27AAMFP3318K1Z2", name: "Prakash Steel Fabricators", tradeName: "Prakash Fab", constitution: "Partnership", address: "Gala 7, Shivaji Nagar Industrial Estate, Bhiwandi 421302", registeredOn: "03/02/2018", city: "Bhiwandi", sector: "Steel fabrication", role: "seller" },
   { gstin: "27AAJCK4821M1Z5", name: "Kavya Infra Projects Pvt Ltd", tradeName: "Kavya Infra", constitution: "Private Limited Company", address: "402 Lodha Supremus, Wagle Estate, Thane 400604", registeredOn: "18/09/2017", city: "Thane", sector: "Civil contractor", role: "seller" },
   { gstin: "27AAFFN2290Q1ZK", name: "Nirmal Precision Components", tradeName: "Nirmal Precision", constitution: "Partnership", address: "D-12 MIDC Bhosari, Pune 411026", registeredOn: "01/07/2017", city: "Pune", sector: "Auto components", role: "seller" },
+  { gstin: "08AAJFI4417N1Z3", name: "Indigo Lane Clothing LLP", tradeName: "Indigo Lane", constitution: "Limited Liability Partnership", address: "B-27, Sitapura Industrial Area, Jaipur 302022", registeredOn: "16/08/2024", city: "Jaipur", sector: "Clothing brand", role: "seller" },
+  { gstin: "08AAKFK5530P1Z8", name: "Kora Weaves LLP", tradeName: "Kora Weaves", constitution: "Limited Liability Partnership", address: "41, Sanganer Textile Market, Jaipur 302029", registeredOn: "02/03/2023", city: "Jaipur", sector: "Clothing brand", role: "seller" },
   { gstin: "27AACCA7712R1Z3", name: "Arcadia Realty Ltd", tradeName: "Arcadia Realty", constitution: "Public Limited Company", address: "Arcadia House, BKC, Mumbai 400051", registeredOn: "01/07/2017", city: "Mumbai", sector: "Real estate", role: "buyer" },
   { gstin: "29AABCV3391D1ZP", name: "Vertex Motors India Ltd", tradeName: "Vertex Motors", constitution: "Public Limited Company", address: "Plot 3, Bommasandra Industrial Area, Bengaluru 560099", registeredOn: "01/07/2017", city: "Bengaluru", sector: "Automotive", role: "buyer" },
   { gstin: "27AADCH6604K1ZR", name: "Harbour Logistics Pvt Ltd", tradeName: "Harbour Logistics", constitution: "Private Limited Company", address: "Survey 112, Vashere, Bhiwandi 421302", registeredOn: "24/03/2018", city: "Bhiwandi", sector: "Warehousing", role: "buyer" },
+  { gstin: "27AAHCV2207L1ZQ", name: "Vastrakala Retail Pvt Ltd", tradeName: "Vastrakala", constitution: "Private Limited Company", address: "3rd Floor, Kamala Mills Compound, Lower Parel, Mumbai 400013", registeredOn: "11/04/2018", city: "Mumbai", sector: "Fashion retail", role: "buyer" },
   { gstin: "27AAICS5530F1Z8", name: "Sunrise Hospitality Pvt Ltd", tradeName: "Sunrise Resorts", constitution: "Private Limited Company", address: "Tungarli Road, Lonavala 410401", registeredOn: "05/01/2019", city: "Lonavala", sector: "Hotels", role: "buyer" },
 ];
 
@@ -65,6 +68,8 @@ const seeds: Seed[] = [
   { docNo: "KIP/INV/26-27/027", docDt: "14/10/2026", sellerGstin: "27AAJCK4821M1Z5", buyerGstin: "27AACCA7712R1Z3", description: "Site mobilisation, Tower C", kind: "invoice", totInvVal: 40000, status: "CNL" },
   { docNo: "NPC/26-27/0412", docDt: "30/10/2026", sellerGstin: "27AAFFN2290Q1ZK", buyerGstin: "29AABCV3391D1ZP", description: "Machined brake brackets, 1,800 pcs", kind: "invoice", totInvVal: 148600, status: "ACT" },
   { docNo: "NPC/26-27/0415", docDt: "03/11/2026", sellerGstin: "27AAFFN2290Q1ZK", buyerGstin: "29AABCV3391D1ZP", description: "CNC gearbox housings, 600 pcs", kind: "invoice", totInvVal: 82300, status: "ACT" },
+  { docNo: "IL/26-27/0001", docDt: "05/11/2026", sellerGstin: "08AAJFI4417N1Z3", buyerGstin: "27AAHCV2207L1ZQ", description: "First lot: 200 hand block printed kurtas", kind: "invoice", totInvVal: 157500, status: "ACT" },
+  { docNo: "KW/26-27/0042", docDt: "04/11/2026", sellerGstin: "08AAKFK5530P1Z8", buyerGstin: "27AAHCV2207L1ZQ", description: "Handloom cotton sarees, 120 pcs", kind: "invoice", totInvVal: 86400, status: "ACT" },
 ];
 
 // The IRP derives an IRN as SHA-256 over seller GSTIN, financial year, document type and number.
@@ -74,7 +79,7 @@ export const einvoices: EInvoice[] = seeds.map((s, i) => ({
   ...s,
   irn: irnFor(s),
   ackNo: `1126${String(10_000_000_000 + i * 7_331_117).slice(-11)}`,
-  ackDt: `${s.docDt} 11:${String(10 + i * 7).padStart(2, "0")}:00`,
+  ackDt: `${s.docDt} 11:${String((10 + i * 7) % 60).padStart(2, "0")}:00`,
   docType: "INV",
   sellerName: companyByGstin(s.sellerGstin)!.name,
   buyerName: companyByGstin(s.buyerGstin)!.name,
@@ -95,6 +100,7 @@ const credit: Record<string, Omit<CreditReport, "gstin" | "legalName" | "bureau"
   "27AACCA7712R1Z3": { cmrRank: 2, avgDaysLate: 6, openDefaults: 0 },
   "29AABCV3391D1ZP": { cmrRank: 4, avgDaysLate: 14, openDefaults: 0 },
   "27AADCH6604K1ZR": { cmrRank: 6, avgDaysLate: 22, openDefaults: 0 },
+  "27AAHCV2207L1ZQ": { cmrRank: 2, avgDaysLate: 4, openDefaults: 0 },
   "27AAICS5530F1Z8": { cmrRank: 9, avgDaysLate: 61, openDefaults: 2 },
 };
 

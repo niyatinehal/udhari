@@ -12,7 +12,9 @@ export const shortHash = (hash: string) => `${hash.slice(0, 10)}…${hash.slice(
 export const date = (unix: number) =>
   new Date(unix * 1000).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
-export const relative = (unix: number, now = Date.now() / 1000) => {
+export const day = (unix: number) => new Date(unix * 1000).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+
+export const relative =(unix: number, now = Date.now() / 1000) => {
   const s = Math.round(unix - now);
   const abs = Math.abs(s);
   const [n, unit] =
