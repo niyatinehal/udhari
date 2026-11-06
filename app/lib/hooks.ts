@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import type { Abi, ContractFunctionArgs, ContractFunctionName, Hex } from "viem";
 import { useConnection, usePublicClient, useSwitchChain, useWriteContract } from "wagmi";
 import { hedera } from "./chain";
@@ -91,8 +91,11 @@ export function useHederaWrite() {
       call: WriteArgs<abi, fn>,
     ): Promise<Hex> => {
       await ensureHedera();
+      // Price the transaction through the app's RPC: wallets' public Hedera endpoints rate limit
+      // eth_gasPrice, which otherwise fails the request before the wallet shows it.
+      const gasPrice = await client!.getGasPrice();
       // wagmi's generic write signature cannot follow these generics; the call is checked above.
-      const hash = await writeContract({ ...call, chainId: hedera.id } as never);
+      const hash = await writeContract({ ...call, chainId: hedera.id, type: "legacy", gasPrice } as never);
       const receipt = await client!.waitForTransactionReceipt({ hash, timeout: 120_000 });
       if (receipt.status !== "success") throw new Error(`Transaction failed: ${hash}`);
       refresh();
@@ -102,14 +105,33 @@ export function useHederaWrite() {
   );
 }
 
-/** Current unix time in seconds, ticking so countdowns stay fresh. */
-export function useNow(intervalMs = 10_000) {
-  const [now, setNow] = useState(() => Math.floor(Date.now() / 1000));
-  useEffect(() => {
-    const t = setInterval(() => setNow(Math.floor(Date.now() / 1000)), intervalMs);
-    return () => clearInterval(t);
-  }, [intervalMs]);
-  return now;
+// One shared clock for countdowns. The server snapshot is 0 so prerendering never reads the time.
+let nowSeconds = 0;
+const clockListeners = new Set<() => void>();
+let clock: ReturnType<typeof setInterval> | undefined;
+const tick = () => {
+  nowSeconds = Math.floor(Date.now() / 1000);
+  clockListeners.forEach((l) => l());
+};
+const subscribeClock = (listener: () => void) => {
+  clockListeners.add(listener);
+  clock ??= setInterval(tick, 5_000);
+  return () => {
+    clockListeners.delete(listener);
+    if (clockListeners.size === 0 && clock) {
+      clearInterval(clock);
+      clock = undefined;
+    }
+  };
+};
+const clockSnapshot = () => {
+  if (nowSeconds === 0) nowSeconds = Math.floor(Date.now() / 1000);
+  return nowSeconds;
+};
+
+/** Current unix time in seconds, updated every five seconds. */
+export function useNow() {
+  return useSyncExternalStore(subscribeClock, clockSnapshot, () => 0);
 }
 
 export const errorMessage = (err: unknown) => {

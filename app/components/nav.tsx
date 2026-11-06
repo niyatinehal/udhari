@@ -48,14 +48,14 @@ function Wallet() {
   const connectors = useConnectors();
   const { mutate: connect, isPending } = useConnect();
   const { mutate: disconnect } = useDisconnect();
-  const { data: hbar } = useBalance({ address, chainId: hedera.id, query: { enabled: !!address, refetchInterval: 10_000 } });
+  const { data: hbar } = useBalance({ address, chainId: hedera.id, query: { enabled: !!address, refetchInterval: 15_000 } });
   const { data: tusd } = useReadContract({
     address: addresses.testUsd,
     abi: testUsdAbi,
     functionName: "balanceOf",
     args: address ? [address] : undefined,
     chainId: hedera.id,
-    query: { enabled: !!address, refetchInterval: 10_000 },
+    query: { enabled: !!address, refetchInterval: 15_000 },
   });
 
   if (status !== "connected" || !address) {

@@ -30,7 +30,7 @@ export default function InvestPage() {
     functionName: "isVerified",
     args: address ? [address] : undefined,
     chainId: hedera.id,
-    query: { enabled: !!address, refetchInterval: 5_000 },
+    query: { enabled: !!address, refetchInterval: 8_000 },
   });
   const now = useNow();
   // Past their due date, open deals can only be closed and refunded.
@@ -143,7 +143,7 @@ function WalletSection() {
     functionName: "balanceOf",
     args: address ? [address] : undefined,
     chainId: hedera.id,
-    query: { enabled: !!address, refetchInterval: 5_000 },
+    query: { enabled: !!address, refetchInterval: 8_000 },
   });
 
   const faucet = async () => {
@@ -279,7 +279,7 @@ function Portfolio({ deals }: { deals: DealView[] }) {
       args: [address!] as const,
       chainId: hedera.id,
     })),
-    query: { enabled: !!address && bonds.length > 0, refetchInterval: 5_000 },
+    query: { enabled: !!address && bonds.length > 0, refetchInterval: 8_000 },
   });
   const held = bonds
     .map((d, i) => ({ deal: d, units: (balances?.[i]?.result as bigint | undefined) ?? 0n }))

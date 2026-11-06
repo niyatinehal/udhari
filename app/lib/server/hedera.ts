@@ -34,8 +34,20 @@ export type DealView = {
   kind: string | null;
 };
 
-/** Every deal on Hedera, joined to its bill by the document hash (keccak256 of the IRN). */
-export const listDeals = async (): Promise<DealView[]> => {
+const dealCache = globalThis as unknown as { deals?: { at: number; value: Promise<DealView[]> } };
+
+/** Every deal on Hedera, joined to its bill. Shared for a few seconds across pollers. */
+export const listDeals = (): Promise<DealView[]> => {
+  const cached = dealCache.deals;
+  if (cached && Date.now() - cached.at < 4_000) return cached.value;
+  const value = readDeals();
+  dealCache.deals = { at: Date.now(), value };
+  value.catch(() => (dealCache.deals = undefined));
+  return value;
+};
+
+/** Reads every deal and joins it to its bill by the document hash (keccak256 of the IRN). */
+const readDeals = async (): Promise<DealView[]> => {
   const count = await hederaClient.readContract({ ...manager, functionName: "dealCount" });
   const ids = Array.from({ length: Number(count) }, (_, i) => BigInt(i + 1));
   const deals = await Promise.all(ids.map((id) => hederaClient.readContract({ ...manager, functionName: "getDeal", args: [id] })));

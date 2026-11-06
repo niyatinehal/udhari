@@ -9,6 +9,9 @@ export const addresses = {
 } as const;
 
 export const hederaRpcUrls = ["https://testnet.hashio.io/api", "https://296.rpc.thirdweb.com"];
+// The app's own reads go to thirdweb first: wallets usually send through Hashio, and Hashio rate
+// limits per IP, so the app's polling would otherwise starve the wallet's gas price lookups.
+const readRpcUrls = ["https://296.rpc.thirdweb.com", "https://testnet.hashio.io/api"];
 
 export const hedera = defineChain({
   id: 296,
@@ -19,7 +22,7 @@ export const hedera = defineChain({
   testnet: true,
 });
 
-export const hederaTransport = fallback(hederaRpcUrls.map((url) => http(url)));
+export const hederaTransport = fallback(readRpcUrls.map((url) => http(url)));
 
 export const fujiRpcUrl = "https://api.avax-test.network/ext/bc/C/rpc";
 
