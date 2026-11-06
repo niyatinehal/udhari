@@ -23,12 +23,11 @@ export async function POST(req: Request) {
     wallet?: string;
     dueDate?: number;
     fileHash?: string;
-    fileName?: string;
   };
   const einvoice = body.irn ? einvoiceByIrn(body.irn) : undefined;
   if (!einvoice) return fail("Unknown e-invoice");
   if (!body.wallet || !isAddress(body.wallet)) return fail("Connect a wallet first");
-  if (!body.fileHash || !isHex(body.fileHash) || body.fileHash.length !== 66) return fail("Attach the bill document");
+  if (!body.fileHash || !isHex(body.fileHash) || body.fileHash.length !== 66) return fail("Upload the bill document");
   const now = Math.floor(Date.now() / 1000);
   const dueDate = body.dueDate;
   if (!dueDate || dueDate < now + 120 || dueDate > now + 180 * DAY) {
@@ -38,6 +37,8 @@ export async function POST(req: Request) {
   const wallet = getAddress(body.wallet);
   const fileHash = body.fileHash;
   const d = read();
+  const document = d.uploads[fileHash];
+  if (!document) return fail("Upload the bill document");
   if (d.wallets[einvoice.sellerGstin] !== wallet) return fail("This wallet does not act for the seller", 403);
   if (d.bills.some((b) => b.irn === einvoice.irn)) return fail("A bill already exists for this e-invoice", 409);
 
@@ -53,7 +54,7 @@ export async function POST(req: Request) {
       amountPaise: Math.round(einvoice.totInvVal * 100),
       dueDate,
       fileHash,
-      fileName: body.fileName?.slice(0, 120) ?? "bill.pdf",
+      fileName: document.name,
       createdAt: now,
       underwriting: null,
     };

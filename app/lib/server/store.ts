@@ -59,8 +59,26 @@ export type Run = {
   endedAt: number | null;
 };
 
+export type Upload = { hash: Hex; name: string; type: string; size: number; uploadedAt: number };
+
+export type BusinessDocument = { kind: string; label: string; hash: Hex; name: string; size: number };
+
+export type Business = {
+  gstin: string;
+  legalName: string;
+  tradeName: string;
+  constitution: string;
+  address: string;
+  wallet: Address;
+  documents: BusinessDocument[];
+  status: "verified";
+  verifiedAt: number;
+};
+
 type Data = {
   wallets: Record<string, Address>; // GSTIN -> wallet that acts for the company
+  businesses: Record<string, Business>; // GSTIN -> registered seller
+  uploads: Record<string, Upload>; // content hash -> uploaded file
   bills: Bill[];
   investors: Record<string, Investor>; // lowercase wallet -> application
   runs: Run[];
@@ -69,13 +87,17 @@ type Data = {
 // Kept outside app/ so the dev server does not treat every write as a source change.
 const file = path.join(repoRoot, ".data", "store.json");
 
+const empty = (): Data => ({ wallets: {}, businesses: {}, uploads: {}, bills: [], investors: {}, runs: [] });
+
 const load = (): Data => {
   try {
-    return JSON.parse(readFileSync(file, "utf8")) as Data;
+    return { ...empty(), ...(JSON.parse(readFileSync(file, "utf8")) as Partial<Data>) };
   } catch {
-    return { wallets: {}, bills: [], investors: {}, runs: [] };
+    return empty();
   }
 };
+
+export const uploadsDir = path.join(repoRoot, ".data", "uploads");
 
 let data: Data | null = null;
 

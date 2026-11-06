@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { links } from "@/lib/chain";
 import { date, inr, relative, short, usd } from "@/lib/format";
 import type { DealView } from "@/lib/server/hedera";
 import type { Bill } from "@/lib/server/store";
 import { CheckIcon } from "./icons";
 import { RunLog } from "./run-log";
+import { TokenCard } from "./token-card";
 import { Check, Spinner } from "./ui";
 
 type Step = { label: string; detail?: React.ReactNode; state: "done" | "active" | "waiting" | "failed"; extra?: React.ReactNode };
@@ -21,7 +21,18 @@ export function BillTimeline({ bill, deal, action }: { bill: Bill; deal?: DealVi
   const funded = status && ["Active", "Repaid", "Late", "Defaulted"].includes(status);
 
   const steps: Step[] = [
-    { label: "Raised", detail: `${bill.fileName} · due ${date(bill.dueDate)}`, state: "done" },
+    {
+      label: "Raised",
+      detail: (
+        <>
+          <a className="text-tint" href={`/api/uploads/${bill.fileHash}`} target="_blank" rel="noreferrer">
+            {bill.fileName}
+          </a>{" "}
+          · due {date(bill.dueDate)}
+        </>
+      ),
+      state: "done",
+    },
     {
       label: "Underwritten by Chainlink CRE",
       state: !u ? "active" : u.status === "running" ? "active" : u.status === "approved" ? "done" : "failed",
@@ -58,15 +69,10 @@ export function BillTimeline({ bill, deal, action }: { bill: Bill; deal?: DealVi
       detail: deal ? `Deal #${deal.id}, delivered by CCIP from Fuji` : u?.status === "approved" ? "Crossing from Fuji over CCIP, about 30 seconds" : undefined,
     },
     {
-      label: "Listed for investors",
+      label: "Tokenized as an ATS bond",
       state: listed ? "done" : deal ? "active" : "waiting",
-      detail: listed ? (
-        <a className="text-tint" href={links.hashscanContract(deal.bond)} target="_blank" rel="noreferrer">
-          ATS bond {short(deal.bond)}
-        </a>
-      ) : deal ? (
-        "Waiting for the platform to issue the bond"
-      ) : undefined,
+      detail: listed ? "One bond for this bill on Hedera, open to verified investors" : deal ? "Waiting for the platform to issue the bond" : undefined,
+      extra: listed && deal ? <TokenCard dealId={deal.id} /> : null,
     },
     {
       label: "Funded",

@@ -52,6 +52,7 @@ type EInvoice = {
 	buyerGstin: string
 	totInvVal: number
 }
+type Seller = { gstin: string; wallet: Address; status: string; documents: { kind: string; hash: Hex }[] }
 type CreditReport = { gstin: string; cmrRank: number; avgDaysLate: number; openDefaults: number }
 
 type Check = { id: string; label: string; ok: boolean; detail: string }
@@ -103,7 +104,16 @@ const onRequest = (runtime: Runtime<Config>, payload: HTTPPayload): string => {
 		`registry ₹${einvoice.totInvVal}, bill ₹${terms.amountPaise / 100}`,
 	)
 
-	// 2. Not financed before, here or through anyone using the same registry key, and the seller
+	// 2. The seller is a verified business and the bill pays out to its registered wallet.
+	const seller = fetchJson<Seller>(runtime, `${config.appUrl}/api/businesses/${terms.seller.gstin}`)
+	check(
+		'kyb',
+		'Seller is a verified business',
+		seller.status === 'verified' && seller.wallet.toLowerCase() === terms.seller.wallet.toLowerCase(),
+		`${seller.status}, ${seller.documents.length} documents on file`,
+	)
+
+	// 3. Not financed before, here or through anyone using the same registry key, and the seller
 	//    is in good standing. Read from Hedera through the mirror node.
 	const used = decodeFunctionResult({
 		abi: managerAbi,
@@ -128,7 +138,7 @@ const onRequest = (runtime: Runtime<Config>, payload: HTTPPayload): string => {
 	})
 	check('standing', 'Seller has no late deals', !frozen, frozen ? 'seller frozen on Hedera' : 'seller in good standing')
 
-	// 3. Tenor and buyer credit.
+	// 4. Tenor and buyer credit.
 	const tenor = terms.dueDate - now
 	check(
 		'tenor',
@@ -149,7 +159,7 @@ const onRequest = (runtime: Runtime<Config>, payload: HTTPPayload): string => {
 		`CMR-${credit.cmrRank}, ${credit.avgDaysLate} days late on average, ${credit.openDefaults} open defaults: grade ${GRADES[grade - 1]}`,
 	)
 
-	// 4. Price it. Investors fund the face value less a discount for the time to maturity.
+	// 5. Price it. Investors fund the face value less a discount for the time to maturity.
 	const inrPerUsd = fetchMedian(runtime, config.fxUrl, ['rates', 'INR'])
 	const faceValue = BigInt(Math.floor((terms.amountPaise / 100 / inrPerUsd) * 100)) * 10_000n // whole cents, 6 decimals
 	const annualRate = config.policy.annualRateBps[grade - 1]

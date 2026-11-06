@@ -24,8 +24,8 @@ export const hedera = defineChain({
   testnet: true,
 });
 
-/** Server-side reads and the operator's transactions. */
-export const hederaTransport = fallback(hederaRpcUrls.map((url) => http(url)));
+/** Server-side reads and the operator's transactions: whichever public endpoint is not throttling. */
+export const hederaTransport = fallback([http(HASHIO, { retryCount: 1 }), http(THIRDWEB, { retryCount: 1 })]);
 
 /** Browser reads. thirdweb's public endpoint rejects cross-origin requests without a client id. */
 export const hederaBrowserTransport = http(HASHIO);
