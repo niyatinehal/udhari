@@ -107,6 +107,29 @@
       "redeemTx": "0x50f4c09c1b2603138009a0b86de16d0855c87e88546799a64ab274ffefddde9b",
       "lifecycle": "approved (CRE, grade A, due in 15 min) -> bond issued -> funded, business paid -> CRE monitor marked late: bond paused, business frozen -> repaid late: bond unpaused, business unfrozen -> redeemed"
     },
+    "4": {
+      "ref": "KIP/RA/26-27/014",
+      "bill": "B-0006",
+      "note": "the deal in the demo video",
+      "bond": "0x49E2be828956aD720Ba273816488fa0ED1b878fB",
+      "underwrite": {
+        "creFujiTx": "0x306a5092c77a7519847453190852d8dec401767a41326f0088378c438348b8c3",
+        "ccipMessageId": "0x95c2ec1cd16a8c3cd1f39515ea107c7024502cad3eb02d0adeb22c207a139328"
+      },
+      "openTx": "0x0c49383d1c094ad2e9ebddf2313501df76139999fb4b45c1dd0825afe03794e8",
+      "kyc": {
+        "creFujiTx": "0xf6a9990e93c629a4c572b8f81100763f67ddf38b4d09d8c8fe8242651cdffa3f",
+        "ccipMessageId": "0xd0b96ceae15b2e60590ced60c1ac60f4376db15eeb0260f7ee825c0b2f5e4dee"
+      },
+      "investTx": "0x32ceaaa9dd3616c6435a03bc6cb1d4134e0adce43cef49270ecaff919ad3b0c7",
+      "markLate": {
+        "creFujiTx": "0x02569a68ebd710ad0616ef5bdf2d61ec06bb762ec4962db0a12aed131772d406",
+        "ccipMessageId": "0x792d6266793c96cf5170ca481d976e3d2bb067982b750300491fee3a79407fca"
+      },
+      "repayTx": "0xcce56f38e005a837102fcd801e7526c73cd3bfab8a9c2f06ec901707eaedc9c1",
+      "redeemTx": "0x808a96505b920d2328abc0755ed79f6b0986d55b19fc095524390931a6e0325f",
+      "lifecycle": "RA bill 4, Rs 1,25,000 -> $1,322.23 face: approved (CRE, grade A) -> bond issued -> investor verified (CRE) and funded 1,318.92, business paid -> CRE monitor marked late: bond paused, business frozen -> repaid late: unpaused, unfrozen -> redeemed"
+    },
     "note": "DealManager v4, all through the web app. creFujiTx is the CRE report on Fuji; ccipMessageId carries it to Hedera."
   },
   "verified": {

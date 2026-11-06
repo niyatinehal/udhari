@@ -107,7 +107,8 @@ export const openDeal = async (dealId: number): Promise<Hex> => {
     account: wallet.account,
     to: addresses.dealManager,
     data: encodeFunctionData({ abi: dealManagerAbi, functionName: "openDeal", args: [BigInt(dealId)] }),
-    gas: 9_000_000n,
+    // Uses about 7.8M; Hedera reserves the whole limit at the current price before running it.
+    gas: 8_200_000n,
     type: "legacy",
     gasPrice: await hederaClient.getGasPrice(),
   });
