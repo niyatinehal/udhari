@@ -1,4 +1,4 @@
-import { defineChain, fallback, http } from "viem";
+import { custom, defineChain, fallback, http, type Transport } from "viem";
 
 // Testnet deployments. Source of truth: contracts/deployments/testnet.json.
 export const addresses = {
@@ -24,14 +24,38 @@ export const hedera = defineChain({
   testnet: true,
 });
 
-/** Server-side reads: whichever public endpoint is not throttling. */
-export const hederaTransport = fallback([http(HASHIO, { retryCount: 1 }), http(THIRDWEB, { retryCount: 1 })]);
+const MIRROR_CALL = "https://testnet.mirrornode.hedera.com/api/v1/contracts/call";
+
+/**
+ * Contract reads go to the Hedera mirror node, which answers in well under a second where the
+ * public JSON-RPC relays throttle; everything else (balances, receipts, gas price) uses `rpc`.
+ */
+const withMirrorReads = (rpc: Transport): Transport => (config) => {
+  const base = rpc(config);
+  return custom({
+    async request({ method, params }) {
+      if (method !== "eth_call") return base.request({ method, params });
+      const [call] = params as [{ to: string; data?: string; input?: string; from?: string }];
+      const res = await fetch(MIRROR_CALL, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ to: call.to, data: call.data ?? call.input, from: call.from, block: "latest" }),
+      });
+      const json = (await res.json()) as { result?: string; _status?: { messages?: { message?: string }[] } };
+      if (!res.ok || !json.result) throw new Error(json._status?.messages?.[0]?.message ?? `mirror node returned ${res.status}`);
+      return json.result;
+    },
+  })(config);
+};
+
+/** Server-side reads. */
+export const hederaTransport = withMirrorReads(fallback([http(HASHIO, { retryCount: 1 }), http(THIRDWEB, { retryCount: 1 })]));
 
 /** Server-side transactions. Preparing a transaction through viem's fallback transport stalls. */
 export const hederaWriteTransport = http(HASHIO, { timeout: 30_000 });
 
 /** Browser reads. thirdweb's public endpoint rejects cross-origin requests without a client id. */
-export const hederaBrowserTransport = http(HASHIO);
+export const hederaBrowserTransport = withMirrorReads(http(HASHIO));
 
 export const fujiRpcUrl = "https://api.avax-test.network/ext/bc/C/rpc";
 

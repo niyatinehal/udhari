@@ -9,7 +9,7 @@ import { CheckIcon, ChevronIcon, CrossIcon } from "./icons";
 
 export function Page({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 pb-24 pt-8">
+    <main id="main" className="mx-auto w-full max-w-3xl px-4 pb-24 pt-24">
       <h1 className="text-[34px] font-bold leading-tight tracking-tight">{title}</h1>
       {subtitle && <p className="mt-1 max-w-xl text-[15px] text-secondary">{subtitle}</p>}
       <div className="mt-6 flex flex-col gap-8">{children}</div>

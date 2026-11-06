@@ -39,7 +39,7 @@ const dealCache = globalThis as unknown as { deals?: { at: number; value: Promis
 /** Every deal on Hedera, joined to its bill. Shared for a few seconds across pollers. */
 export const listDeals = (): Promise<DealView[]> => {
   const cached = dealCache.deals;
-  if (cached && Date.now() - cached.at < 4_000) return cached.value;
+  if (cached && Date.now() - cached.at < 5_000) return cached.value;
   const value = readDeals();
   dealCache.deals = { at: Date.now(), value };
   value.catch(() => (dealCache.deals = undefined));
