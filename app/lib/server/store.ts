@@ -1,0 +1,94 @@
+import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import path from "node:path";
+import type { Address, Hex } from "viem";
+
+// Off-chain records: bills waiting for confirmation or underwriting, investor KYC applications,
+// wallet bindings for companies and CRE run history. A JSON file is enough for a testnet demo.
+
+export type Decision = {
+  billId: string;
+  approved: boolean;
+  grade: number;
+  gradeLetter: string;
+  annualRateBps: number;
+  discountBps: number;
+  inrPerUsd: number;
+  faceValue: string;
+  dueDate: number;
+  docHash: Hex;
+  checks: { id: string; label: string; ok: boolean; detail: string }[];
+  txHash: Hex | null;
+};
+
+export type Bill = {
+  id: string;
+  irn: string;
+  ref: string;
+  kind: "invoice" | "milestone";
+  description: string;
+  seller: { gstin: string; name: string; wallet: Address };
+  buyer: { gstin: string; name: string };
+  amountPaise: number;
+  dueDate: number;
+  fileHash: Hex;
+  fileName: string;
+  createdAt: number;
+  confirmation: { wallet: Address; signature: Hex; signedAt: number } | null;
+  underwriting: { runId: string; status: "running" | "approved" | "declined" | "failed"; decision?: Decision } | null;
+};
+
+export type Investor = {
+  wallet: Address;
+  name: string;
+  pan: string;
+  country: string;
+  createdAt: number;
+  kyc: { runId: string; status: "running" | "verified" | "rejected" | "failed"; reasons?: string[]; txHash?: Hex } | null;
+};
+
+export type Run = {
+  id: string;
+  workflow: string;
+  payload: unknown;
+  status: "queued" | "running" | "done" | "failed";
+  logs: string[];
+  result: unknown;
+  txHash: Hex | null;
+  messageId: Hex | null;
+  startedAt: number;
+  endedAt: number | null;
+};
+
+type Data = {
+  wallets: Record<string, Address>; // GSTIN -> wallet that acts for the company
+  bills: Bill[];
+  investors: Record<string, Investor>; // lowercase wallet -> application
+  runs: Run[];
+};
+
+const file = path.join(process.cwd(), ".data", "store.json");
+
+const load = (): Data => {
+  try {
+    return JSON.parse(readFileSync(file, "utf8")) as Data;
+  } catch {
+    return { wallets: {}, bills: [], investors: {}, runs: [] };
+  }
+};
+
+let data: Data | null = null;
+
+export const read = (): Data => (data ??= load());
+
+/** Applies a change and writes the file atomically. */
+export const write = <T>(change: (d: Data) => T): T => {
+  const d = read();
+  const result = change(d);
+  d.runs = d.runs.slice(-100);
+  mkdirSync(path.dirname(file), { recursive: true });
+  writeFileSync(`${file}.tmp`, JSON.stringify(d, null, 2));
+  renameSync(`${file}.tmp`, file);
+  return result;
+};
+
+export const nextBillId = (d: Data) => `B-${String(d.bills.length + 1).padStart(4, "0")}`;

@@ -240,8 +240,32 @@ contract DealManagerTest is Test {
         vm.prank(buyer);
         manager.repay(dealId);
         assertFalse(bond.paused());
+        assertFalse(manager.frozenBusiness(business));
         vm.prank(alice);
         manager.redeem(dealId);
+    }
+
+    function test_BusinessStaysFrozenUntilEveryLateDealIsRepaid() public {
+        (uint256 first,) = _fundedDeal();
+        uint256 second = _approve(keccak256("doc-2"));
+        manager.openDeal(second);
+        vm.prank(alice);
+        manager.invest(second, 95e6);
+
+        vm.warp(block.timestamp + 2 days);
+        _deliver(Actions.MARK_LATE, abi.encode(first, false));
+        _deliver(Actions.MARK_LATE, abi.encode(second, false));
+        _deliver(Actions.MARK_LATE, abi.encode(second, true)); // escalation is not a new delinquency
+        assertEq(manager.delinquentDeals(business), 2);
+
+        vm.prank(buyer);
+        manager.repay(first);
+        assertTrue(manager.frozenBusiness(business));
+
+        vm.prank(buyer);
+        manager.repay(second);
+        assertFalse(manager.frozenBusiness(business));
+        assertEq(manager.delinquentDeals(business), 0);
     }
 
     function test_ReconciliationMismatchPausesFunding() public {

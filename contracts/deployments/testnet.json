@@ -7,7 +7,8 @@
     "creMockForwarder": "0x2e7371a5d032489e4f60216d8d898a4c10805963",
     "creRelayManual": "0x01c23dC688aB4df2E4329C6F32af5Ef7fbf1B45C",
     "creRelay": "0xA074d972967c69BB5a0ae669e2d807b1744857b2",
-    "note": "creRelay has the same address as hedera.dealManager by coincidence: the operator nonce matched on both chains."
+    "note": "creRelay has the same address as hedera.dealManager by coincidence: the operator nonce matched on both chains.",
+    "setDestReceiverTx": "0x686578ed6f9116585b8c5d5888d90d9ead8a2a3dd49b49f50da1c5b780bd33d1"
   },
   "hedera": {
     "chainId": 296,
@@ -23,10 +24,12 @@
     "atsFactoryEvm": "0xd1f118a40f3b02883d35909ef2517e7edd78379d",
     "atsResolverEvm": "0xBA2D5FC2083A0b8f164c50e65d782087fBA18E0a",
     "dealManagerUsdc": "0xE843C1Bb8479b9DEb325684DF0398342c93bEa29",
-    "dealManager": "0x4A39D2a52dd0E4Aa2641A63861C3d7eAD00E7587",
+    "dealManager": "0x19723Bc95eFc5b8153B80B2E44c72D40754A1b5b",
     "testUsd": "0x9793ce270670a2cf1D72d80D3C6eAcBb4B420D9b",
     "rpcFallback": "https://296.rpc.thirdweb.com",
-    "note": "dealManager uses tUSD while the Circle Hedera faucet is not delivering; dealManagerUsdc holds the expired INV-TEST-0001."
+    "note": "dealManager (v4) unfreezes a business once its late deals are repaid; dealManagerV3 holds INV-TEST-0002 and its lifecycle under deals; dealManagerUsdc holds the expired INV-TEST-0001. All use tUSD except dealManagerUsdc.",
+    "dealManagerV3": "0x4A39D2a52dd0E4Aa2641A63861C3d7eAD00E7587",
+    "dealManagerDeployTx": "0x6a5d6b9d7c2be1bcf0b3f9cb0814e4245c7429cabe422fd84aae88d8d49c07ee"
   },
   "accounts": {
     "operator": "0x615a13517F257f8Fa160d9F5C2E8064a1D0858AF",
@@ -59,7 +62,18 @@
       "note": "approved and KYC via CRE ops workflow; bond deployed by DealManager through the ATS factory (7.79M gas)"
     }
   },
-  "deals": {
+  "deals": {},
+  "verified": {
+    "note": "Sourcify exact_match; HashScan and Snowtrace read Sourcify",
+    "hedera": [
+      "dealManager",
+      "testUsd"
+    ],
+    "fuji": [
+      "creRelay"
+    ]
+  },
+  "dealsV3": {
     "1": {
       "ref": "INV-TEST-0002",
       "bond": "0x41c46F15B4fE8Ef1eE3A03b8e8c82DD3Cd2D7E5f",
@@ -70,15 +84,5 @@
       "redeemTx": "0xff7f49504a404534d00211ed1254c26035e07fb522f5dc7bcadbdaa57765ef22",
       "lifecycle": "approved (CRE) -> bond opened -> investor verified (CRE) -> invested 9.5, business paid 9.5 -> marked late (CRE): bond paused, business frozen -> repaid 10: bond unpaused -> redeemed 10; bond supply 0, reserved 0"
     }
-  },
-  "verified": {
-    "note": "Sourcify exact_match; HashScan and Snowtrace read Sourcify",
-    "hedera": [
-      "dealManager",
-      "testUsd"
-    ],
-    "fuji": [
-      "creRelay"
-    ]
   }
 }

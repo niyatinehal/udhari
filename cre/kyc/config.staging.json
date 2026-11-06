@@ -1,0 +1,9 @@
+{
+  "appUrl": "http://localhost:3000",
+  "mirrorUrl": "https://testnet.mirrornode.hedera.com",
+  "dealManager": "0x19723Bc95eFc5b8153B80B2E44c72D40754A1b5b",
+  "allowedCountries": ["IN", "AE", "SG", "GB"],
+  "chainSelectorName": "avalanche-testnet-fuji",
+  "relayAddress": "0xA074d972967c69BB5a0ae669e2d807b1744857b2",
+  "gasLimit": "1000000"
+}

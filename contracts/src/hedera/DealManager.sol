@@ -84,6 +84,8 @@ contract DealManager is CCIPReceiver, Ownable, ReentrancyGuard, IAtsExternalKycL
     mapping(uint256 => Deal) private s_deals;
     mapping(address => bool) public isVerified;
     mapping(address => bool) public frozenBusiness;
+    /// @notice Late or defaulted deals per business; it is unfrozen when this returns to zero.
+    mapping(address => uint256) public delinquentDeals;
     /// @notice Document hashes and payment references, each usable once.
     mapping(bytes32 => bool) public usedRef;
 
@@ -107,6 +109,7 @@ contract DealManager is CCIPReceiver, Ownable, ReentrancyGuard, IAtsExternalKycL
     event Redeemed(uint256 indexed dealId, address indexed investor, uint256 units, uint256 payout);
     event StatusChanged(uint256 indexed dealId, Status status);
     event BusinessFrozen(address indexed business, uint256 indexed dealId);
+    event BusinessUnfrozen(address indexed business, uint256 indexed dealId);
     event InvestorVerified(address indexed investor, bool verified, bytes32 kycRef);
     event Reconciled(bool ok, uint256 offchainBalance, uint256 reserved, bytes32 snapshotHash);
     event FundingPaused(bool paused);
@@ -239,6 +242,8 @@ contract DealManager is CCIPReceiver, Ownable, ReentrancyGuard, IAtsExternalKycL
         // forge-lint: disable-next-line(block-timestamp)
         if (block.timestamp <= d.dueDate) revert NotDueYet(d.dueDate);
 
+        // Late -> Defaulted escalates a deal already counted.
+        if (d.status == Status.Active) delinquentDeals[d.business] += 1;
         Status s = defaulted ? Status.Defaulted : Status.Late;
         d.status = s;
         emit StatusChanged(dealId, s);
@@ -373,6 +378,12 @@ contract DealManager is CCIPReceiver, Ownable, ReentrancyGuard, IAtsExternalKycL
         reserved += amount;
         emit Repaid(dealId, amount, paymentRef);
         emit StatusChanged(dealId, Status.Repaid);
+
+        // Curing the last delinquent deal lets the business raise and receive funding again.
+        if (wasPaused && --delinquentDeals[d.business] == 0) {
+            frozenBusiness[d.business] = false;
+            emit BusinessUnfrozen(d.business, dealId);
+        }
     }
 
     /// @dev A late deal's units were paused; repayment lets holders redeem again.
