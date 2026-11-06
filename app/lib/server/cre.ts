@@ -69,7 +69,8 @@ const execute = (run: Run) =>
     ];
     if (run.payload !== null) args.push("--http-payload", JSON.stringify(run.payload));
 
-    const child = spawn(creBin, args, {
+    // The CLI runs outside the app bundle; nothing it touches needs tracing into the server output.
+    const child = spawn(/*turbopackIgnore: true*/ creBin, args, {
       cwd: path.join(repoRoot, "cre"),
       env: { ...process.env, PATH: bunDir ? `${bunDir}${path.delimiter}${process.env.PATH}` : process.env.PATH },
       windowsHide: true,
