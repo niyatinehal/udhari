@@ -1,7 +1,7 @@
 import { createPublicClient, createWalletClient, encodeFunctionData, keccak256, toHex, type Hex } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { dealManagerAbi } from "../abi";
-import { addresses, dealStatus, hedera, hederaTransport } from "../chain";
+import { addresses, dealStatus, hedera, hederaTransport, hederaWriteTransport } from "../chain";
 import { env } from "./env";
 import { read } from "./store";
 
@@ -85,7 +85,7 @@ const readDeals = async (): Promise<DealView[]> => {
 const operator = () => {
   const key = env("PRIVATE_KEY");
   if (!key) throw new Error("PRIVATE_KEY is not set in the repository .env");
-  return createWalletClient({ account: privateKeyToAccount(key as Hex), chain: hedera, transport: hederaTransport });
+  return createWalletClient({ account: privateKeyToAccount(key as Hex), chain: hedera, transport: hederaWriteTransport });
 };
 
 const pendingOpens = globalThis as unknown as { pendingOpens?: Map<number, Hex> };
@@ -103,7 +103,7 @@ export const openDeal = async (dealId: number): Promise<Hex> => {
   if (dealStatus[deal.status] !== "Approved") throw new Error(`Deal #${dealId} is ${dealStatus[deal.status]}`);
 
   const wallet = operator();
-  const request = await hederaClient.prepareTransactionRequest({
+  const request = await wallet.prepareTransactionRequest({
     account: wallet.account,
     to: addresses.dealManager,
     data: encodeFunctionData({ abi: dealManagerAbi, functionName: "openDeal", args: [BigInt(dealId)] }),
@@ -115,7 +115,7 @@ export const openDeal = async (dealId: number): Promise<Hex> => {
   const signed = await wallet.signTransaction(request);
   const hash = keccak256(signed);
   pending.set(dealId, hash);
-  hederaClient
+  wallet
     .sendRawTransaction({ serializedTransaction: signed })
     .then(() => hederaClient.waitForTransactionReceipt({ hash, timeout: 300_000 }))
     .catch((err) => console.error(`openDeal ${dealId} in ${hash}:`, (err as Error).message))

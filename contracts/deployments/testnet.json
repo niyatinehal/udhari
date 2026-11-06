@@ -133,7 +133,7 @@
     "5": {
       "ref": "KIP/RA/26-27/015",
       "bill": "B-0007",
-      "note": "the deal in the demo video",
+      "note": "the deal in the second demo video (before business registration)",
       "bond": "0x3C4c2B846e127421132D0C394114ec975BAF8487",
       "underwrite": {
         "creFujiTx": "0xc6d4fb4eedc83fd9a309c2ba74391f27bbd2f98e4273db2e04071b11eeb48fdd",
@@ -153,7 +153,30 @@
       "redeemTx": "0xc0839814bb795dffff3faad1cfcdae29065cd32d3420cb54886753957428c9d9",
       "lifecycle": "RA bill 5, Rs 96,400 -> $1,019.70 face: approved (CRE, grade A, no buyer step) -> bond issued -> investor verified (CRE) and funded 1,017.15, business paid -> CRE monitor marked late: bond paused, business frozen -> repaid late: unpaused, unfrozen -> redeemed"
     },
-    "note": "DealManager v4, all through the web app. creFujiTx is the CRE report on Fuji; ccipMessageId carries it to Hedera."
+    "note": "DealManager v4, all through the web app. creFujiTx is the CRE report on Fuji; ccipMessageId carries it to Hedera.",
+    "6": {
+      "ref": "VEC/RA/26-27/007",
+      "bill": "B-0009",
+      "note": "the deal in the demo video: seller registered from scratch with KYB documents",
+      "bond": "0x4E4Ef78F22d5b5DB50C94D658DEe3ccEeeEDB39C",
+      "underwrite": {
+        "creFujiTx": "0x70a17f9c5b4d89516485fdf85da9b74952d7e7329e314af51f03c7e2a579c2bf",
+        "ccipMessageId": "0xea3d125e2f406bf2337415c5518a3b7bc720e3133c93d9fca01f3765ca24aa6b"
+      },
+      "openTx": "0xa932b8c28a177009499e354556299ba41245b35c6e094b0ccf2c45c55986f41f",
+      "kyc": {
+        "creFujiTx": "0xf1d475c0f0455cde6e85278ad30411be92f2d85928130f591b9e109a09a7cc42",
+        "ccipMessageId": "0x625e9094b74ae488556582be5c8ba5bd4390f1f307e07137bf110dc8e467fc59"
+      },
+      "investTx": "0xb64ca93b615225a3b2c063dafda245742ff3a9935de016bf0fa52047bd806353",
+      "markLate": {
+        "creFujiTx": "0x4729216562ea8dcc4b8e0b1704746b9b5eeae17f5f121c4e9cc160159f095a90",
+        "ccipMessageId": "0x84ce6055e05330b4c3d97d40abbf13edb7ae5621117752baf9a800c0a4bd25ba"
+      },
+      "repayTx": "0x90530124af72910cdeb2d4e27cbf94b139a9f847e5fd94a36a7a513c393c3982",
+      "redeemTx": "0x57ccb80e7ce67169f823d17e4a94e76c17a498176da02a138aff3d651da06d61",
+      "lifecycle": "Vedant Electricals registered (GSTIN lookup, 3 KYB documents) -> RA bill 7, Rs 1,18,000 -> $1,248.18 face, certified bill uploaded: approved (CRE, 8 checks, grade A) -> ATS bond BILL6, ISIN ZZ0000000065 -> investor verified (CRE) and funded 1,245.06, business paid -> CRE monitor marked late: bond paused, business frozen -> repaid late: unpaused, unfrozen -> redeemed"
+    }
   },
   "verified": {
     "note": "Sourcify exact_match; HashScan and Snowtrace read Sourcify",

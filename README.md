@@ -15,22 +15,25 @@ Chainlink CCIP, where a contract enforces the policy again and issues an ATS bon
 
 ## How a bill moves
 
-1. **The business raises a bill** against an e-invoice already registered on the GST
-   Invoice Registration Portal (IRP), with the due date and the bill document. Nothing is needed
-   from the buyer: the e-invoice is the record of what it owes.
-2. **CRE underwrites it.** The DON fetches every input itself, so the platform cannot push an
-   approval through: the bill record, the e-invoice (status, parties, amount), the buyer's credit
-   report, and an INR/USD rate (median across nodes). It reads Hedera through the mirror node to
+1. **The business registers.** It enters its GSTIN, its registration comes from the GST network,
+   and it uploads its KYB documents (GST certificate, PAN, cancelled cheque). Documents are stored
+   by content hash.
+2. **It raises a bill** against an e-invoice already registered on the GST Invoice Registration
+   Portal (IRP), with the due date, and uploads the certified bill. Nothing is needed from the
+   buyer: the e-invoice is the record of what it owes.
+3. **CRE underwrites it.** The DON fetches every input itself, so the platform cannot push an
+   approval through: the bill record, the e-invoice (status, parties, amount), the seller's
+   verification, the buyer's credit report, and an INR/USD rate (median across nodes). It reads Hedera through the mirror node to
    reject an invoice financed before or a seller with a late deal. It grades the buyer A to E and
    prices the discount for the time to maturity.
-3. **CCIP carries the approval to Hedera** from the CRE relay on Avalanche Fuji (about 30 s).
+4. **CCIP carries the approval to Hedera** from the CRE relay on Avalanche Fuji (about 30 s).
    `DealManager` checks the grade and discount against its own limits and records the IRN hash so
    the same invoice can never be financed twice.
-4. **An ATS bond is issued for the deal**: one bond per bill, `DealManager` holding every role.
+5. **The bill becomes a token: an ATS bond**: one bond per bill, `DealManager` holding every role.
    `DealManager` is also the bond's external KYC list, so only wallets CRE has verified can hold it.
-5. **Investors fund it** in USD stablecoin. On full funding the business is paid in the same
+6. **Investors fund it** in USD stablecoin. On full funding the business is paid in the same
    transaction.
-6. **The buyer pays the face value**; holders redeem their share. If the due date passes unpaid,
+7. **The buyer pays the face value**; holders redeem their share. If the due date passes unpaid,
    the CRE monitor marks the deal late: the bond is paused and the business frozen until it is
    cured. A deal not fully funded by its due date can be closed and refunded 1:1.
 
@@ -93,21 +96,22 @@ Contracts are verified on Sourcify. Every address and transaction is recorded in
 
 ### One deal, end to end
 
-Deal #5, the one in the demo video: Kavya Infra's RA bill 5 to Arcadia Realty, ₹96,400
-($1,019.70 at ₹94.54/USD), due in 15 minutes so the late path could run live. Every step was
-driven from the web app.
+Deal #6, the one in the demo video: Vedant Electricals & Controls registers from scratch, then
+finances its certified RA bill 7 to Arcadia Realty, ₹1,18,000 ($1,248.18 at ₹94.54/USD), due in
+15 minutes so the late path could run live. Every step was driven from the web app.
 
 | Step | Where | Transaction |
 |---|---|---|
-| CRE underwrites (grade A, 0.25%) and writes the report | Fuji | [`0xc6d4fb4e…`](https://testnet.snowtrace.io/tx/0xc6d4fb4eedc83fd9a309c2ba74391f27bbd2f98e4273db2e04071b11eeb48fdd) |
-| CCIP delivers the approval | Fuji → Hedera | [`0xc8cea8eb…`](https://ccip.chain.link/msg/0xc8cea8ebd8f546273bdc83a31553f2b46b9a7e77148b974f97aba765a11d1a7b) |
-| ATS bond issued | Hedera | [`0x08e89eac…`](https://hashscan.io/testnet/transaction/0x08e89eacc34c442fdbe20b7dfc12b686f5d11a285bb18c8b212d8271b8a9e2b0) |
-| CRE verifies the investor | Fuji → Hedera | [`0x4c24d31e…`](https://ccip.chain.link/msg/0x4c24d31e653abbb6da53c1062d7061e65dadb900eaf49dbcf5959733d55e7620) |
-| Investor funds it; the business is paid in the same transaction | Hedera | [`0x7b12c73b…`](https://hashscan.io/testnet/transaction/0x7b12c73bea8f183586a07a1af6b24e47fc7673de5350bd9dbb785459b0433199) |
-| CRE monitor finds it overdue and marks it late | Fuji | [`0xba8ff463…`](https://testnet.snowtrace.io/tx/0xba8ff463e3480fc38dd0b9399cfa1860e26acc7f2a613670600976adf18de0a5) |
-| CCIP delivers it: bond paused, business frozen | Fuji → Hedera | [`0x8b3bb8d0…`](https://ccip.chain.link/msg/0x8b3bb8d07fbdcaea3a19bedacc57e86607b9ea2b36304f9e7f31a71b6d95081c) |
-| Buyer pays late: bond unpaused, business unfrozen | Hedera | [`0x0dc00464…`](https://hashscan.io/testnet/transaction/0x0dc00464e0fb71da64bf24fcd1215394fc4ffc23d5cf51fff09719156f01d57c) |
-| Investor redeems; bond supply back to zero | Hedera | [`0xc0839814…`](https://hashscan.io/testnet/transaction/0xc0839814bb795dffff3faad1cfcdae29065cd32d3420cb54886753957428c9d9) |
+| Vedant Electricals registers: GSTIN looked up, KYB documents uploaded | App | web app |
+| CRE underwrites (8 checks, grade A, 0.25%) and writes the report | Fuji | [`0x70a17f9c…`](https://testnet.snowtrace.io/tx/0x70a17f9c5b4d89516485fdf85da9b74952d7e7329e314af51f03c7e2a579c2bf) |
+| CCIP delivers the approval | Fuji → Hedera | [`0xea3d125e…`](https://ccip.chain.link/msg/0xea3d125e2f406bf2337415c5518a3b7bc720e3133c93d9fca01f3765ca24aa6b) |
+| The bill becomes ATS bond BILL6 (ISIN ZZ0000000065) | Hedera | [`0xa932b8c2…`](https://hashscan.io/testnet/transaction/0xa932b8c28a177009499e354556299ba41245b35c6e094b0ccf2c45c55986f41f) |
+| CRE verifies the investor | Fuji → Hedera | [`0x625e9094…`](https://ccip.chain.link/msg/0x625e9094b74ae488556582be5c8ba5bd4390f1f307e07137bf110dc8e467fc59) |
+| Investor funds it; the business is paid in the same transaction | Hedera | [`0xb64ca93b…`](https://hashscan.io/testnet/transaction/0xb64ca93b615225a3b2c063dafda245742ff3a9935de016bf0fa52047bd806353) |
+| CRE monitor finds it overdue and marks it late | Fuji | [`0x47292165…`](https://testnet.snowtrace.io/tx/0x4729216562ea8dcc4b8e0b1704746b9b5eeae17f5f121c4e9cc160159f095a90) |
+| CCIP delivers it: bond paused, business frozen | Fuji → Hedera | [`0x84ce6055…`](https://ccip.chain.link/msg/0x84ce6055e05330b4c3d97d40abbf13edb7ae5621117752baf9a800c0a4bd25ba) |
+| Buyer pays late: bond unpaused, business unfrozen | Hedera | [`0x90530124…`](https://hashscan.io/testnet/transaction/0x90530124af72910cdeb2d4e27cbf94b139a9f847e5fd94a36a7a513c393c3982) |
+| Investor redeems; bond supply back to zero | Hedera | [`0x57ccb80e…`](https://hashscan.io/testnet/transaction/0x57ccb80e7ce67169f823d17e4a94e76c17a498176da02a138aff3d651da06d61) |
 
 ## What is real and what is a stand-in
 

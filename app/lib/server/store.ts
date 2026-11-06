@@ -99,9 +99,10 @@ const load = (): Data => {
 
 export const uploadsDir = path.join(repoRoot, ".data", "uploads");
 
-let data: Data | null = null;
+// One cache per process: dev reloads create new module instances, and each must see the same data.
+const cache = globalThis as unknown as { storeData?: Data };
 
-export const read = (): Data => (data ??= load());
+export const read = (): Data => (cache.storeData ??= load());
 
 /** Applies a change and writes the file atomically. */
 export const write = <T>(change: (d: Data) => T): T => {
