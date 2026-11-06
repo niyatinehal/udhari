@@ -62,7 +62,53 @@
       "note": "approved and KYC via CRE ops workflow; bond deployed by DealManager through the ATS factory (7.79M gas)"
     }
   },
-  "deals": {},
+  "deals": {
+    "1": {
+      "ref": "NPC/26-27/0415",
+      "bill": "B-0002",
+      "bond": "0x98bAD2913549780a26376ddaA6594e64EC0df761",
+      "underwrite": {
+        "creFujiTx": "0xb8372456ee1cef710e82f2141ec5e9b30a0e5722fd138dab37df35d42499216e",
+        "ccipMessageId": "0xe6408b3087356659b374696ae908fd962eea9f3a54668ec51dfc432d0d59fcf1"
+      },
+      "openTx": "0xfc16c9a875714c647c71dfc47c0cbbf4182268b5c6f447f227e89c94e6c54020",
+      "investTx": "0xe4234d548482051befc6ddb9f3d0675534c7283dadf58e3b1214fe5931e35164",
+      "repayTx": "0x9177b9af45e70581c209a2c6110897a545b8f5263831618d3f6b58c133c51f86",
+      "redeemTx": "0x499b85912eb6892786a593f25019e1d80e01528a20db60007ab1b8cffcfdeb55",
+      "lifecycle": "approved (CRE, grade B) -> bond issued -> funded 868.37, business paid -> repaid 870.55 -> redeemed"
+    },
+    "2": {
+      "ref": "KIP/INV/26-27/031",
+      "bill": "B-0003",
+      "bond": "0xCfbEd08Ae2865F69E2b24fe190bf4cacd6234C17",
+      "underwrite": {
+        "creFujiTx": "0x33e89125be819b37dd2aeaaa5f02b5043613a34b2a040ea917f960e970869a5d",
+        "ccipMessageId": "0x520cf113fd1c1797c706352844595e167091295908059de797ae3e29dfa01e8a"
+      },
+      "openTx": "0x088eb99d4843aadc548f3f2ce861ca9b4ba6b5881f3298fc86309f305d9ff0b0",
+      "expireTx": "0xc24842a9fd8d853b580bb1ea94764c3ea4950a8e59ea5f62ce6fc9f4d61357fb",
+      "lifecycle": "approved (CRE, grade C) -> bond issued -> unfunded at due date -> expired"
+    },
+    "3": {
+      "ref": "KIP/INV/26-27/034",
+      "bill": "B-0004",
+      "bond": "0x7558b974148f9ab1803870D7Ec6a82c314c28c11",
+      "underwrite": {
+        "creFujiTx": "0x10170b72d801553f3b9b2b113e2401be5d29bee3bb0875996b7e05c87a3925b7",
+        "ccipMessageId": "0xef9c8f531f70c9b46fd27cbad2cf88e0f0cc55bc5f9a40639864b8cbbceb87bf"
+      },
+      "openTx": "0x4de0f86eaaef8ce9a547ad34bfd92b37f39a1bef0bf045717fa0a68f36143dff",
+      "investTx": "0x8f56dbd36bc94ac27f3d73fc85f83caf41a4740d21b4606f31a9dd92c22ac6f4",
+      "markLate": {
+        "creFujiTx": "0x53218f1e8ea8606d75a98c61583f0b8b695281cfe11706253525ca9d0d80e170",
+        "ccipMessageId": "0x185775e6cc87c228f01c845fa32c2feda4c9d9865fbe63de7735b4b2b49e3581"
+      },
+      "repayTx": "0x906eb32c5dea08ea7c5bbaeac0d48b55f8d37112c3160032558aabc700c005fa",
+      "redeemTx": "0x50f4c09c1b2603138009a0b86de16d0855c87e88546799a64ab274ffefddde9b",
+      "lifecycle": "approved (CRE, grade A, due in 15 min) -> bond issued -> funded, business paid -> CRE monitor marked late: bond paused, business frozen -> repaid late: bond unpaused, business unfrozen -> redeemed"
+    },
+    "note": "DealManager v4, all through the web app. creFujiTx is the CRE report on Fuji; ccipMessageId carries it to Hedera."
+  },
   "verified": {
     "note": "Sourcify exact_match; HashScan and Snowtrace read Sourcify",
     "hedera": [
@@ -84,5 +130,10 @@
       "redeemTx": "0xff7f49504a404534d00211ed1254c26035e07fb522f5dc7bcadbdaa57765ef22",
       "lifecycle": "approved (CRE) -> bond opened -> investor verified (CRE) -> invested 9.5, business paid 9.5 -> marked late (CRE): bond paused, business frozen -> repaid 10: bond unpaused -> redeemed 10; bond supply 0, reserved 0"
     }
+  },
+  "kyc": {
+    "wallet": "0x615a13517F257f8Fa160d9F5C2E8064a1D0858AF",
+    "creFujiTx": "0x1d663c8eef79b531124b5855096b12557b196129f43899bce62f1d337100949d",
+    "ccipMessageId": "0x1bf9e20637113fc028d445f2b29d004bf89bbc4c3e76613731f022786dea51a4"
   }
 }
