@@ -1,10 +1,10 @@
-# Bills (working name)
+# Udhari
 
-Get paid for work you have already billed.
+Your dues, paid today. *Udhari* (n.): money you are owed but have not yet received.
 
 Indian small businesses had ₹7.34 lakh crore stuck in delayed payments in March 2024. A civil
 contractor waits months for a client to settle a certified milestone bill; a parts supplier waits
-for a carmaker to pay an invoice. Bills turns that receivable into a bond on Hedera, verified
+for a carmaker to pay an invoice. Udhari turns that receivable into a bond on Hedera, verified
 investors fund it, and the business is paid the moment it is fully funded. When the buyer pays,
 investors redeem the face value.
 
