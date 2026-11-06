@@ -8,9 +8,12 @@ export const addresses = {
   operator: "0x615a13517F257f8Fa160d9F5C2E8064a1D0858AF",
 } as const;
 
-// thirdweb first: Hashio rate limits per IP, and wallets simulate and estimate every transaction
-// through their RPC. A wallet adding Hedera from this app gets thirdweb as its default.
-export const hederaRpcUrls = ["https://296.rpc.thirdweb.com", "https://testnet.hashio.io/api"];
+const THIRDWEB = "https://296.rpc.thirdweb.com";
+const HASHIO = "https://testnet.hashio.io/api";
+
+// thirdweb first for wallets and the server: Hashio rate limits per IP, and wallets simulate and
+// estimate every transaction through their RPC. A wallet adding Hedera here gets thirdweb.
+export const hederaRpcUrls = [THIRDWEB, HASHIO];
 
 export const hedera = defineChain({
   id: 296,
@@ -21,7 +24,11 @@ export const hedera = defineChain({
   testnet: true,
 });
 
+/** Server-side reads and the operator's transactions. */
 export const hederaTransport = fallback(hederaRpcUrls.map((url) => http(url)));
+
+/** Browser reads. thirdweb's public endpoint rejects cross-origin requests without a client id. */
+export const hederaBrowserTransport = http(HASHIO);
 
 export const fujiRpcUrl = "https://api.avax-test.network/ext/bc/C/rpc";
 

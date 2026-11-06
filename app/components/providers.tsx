@@ -4,12 +4,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import { createConfig, WagmiProvider } from "wagmi";
 import { injected } from "wagmi/connectors";
-import { hedera, hederaTransport } from "@/lib/chain";
+import { hedera, hederaBrowserTransport } from "@/lib/chain";
 
 export const wagmiConfig = createConfig({
   chains: [hedera],
   connectors: [injected()],
-  transports: { [hedera.id]: hederaTransport },
+  transports: { [hedera.id]: hederaBrowserTransport },
   ssr: true,
 });
 
