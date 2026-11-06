@@ -110,7 +110,7 @@
     "4": {
       "ref": "KIP/RA/26-27/014",
       "bill": "B-0006",
-      "note": "the deal in the demo video",
+      "note": "the deal in the first demo video (with the buyer signature step, since removed)",
       "bond": "0x49E2be828956aD720Ba273816488fa0ED1b878fB",
       "underwrite": {
         "creFujiTx": "0x306a5092c77a7519847453190852d8dec401767a41326f0088378c438348b8c3",
@@ -129,6 +129,29 @@
       "repayTx": "0xcce56f38e005a837102fcd801e7526c73cd3bfab8a9c2f06ec901707eaedc9c1",
       "redeemTx": "0x808a96505b920d2328abc0755ed79f6b0986d55b19fc095524390931a6e0325f",
       "lifecycle": "RA bill 4, Rs 1,25,000 -> $1,322.23 face: approved (CRE, grade A) -> bond issued -> investor verified (CRE) and funded 1,318.92, business paid -> CRE monitor marked late: bond paused, business frozen -> repaid late: unpaused, unfrozen -> redeemed"
+    },
+    "5": {
+      "ref": "KIP/RA/26-27/015",
+      "bill": "B-0007",
+      "note": "the deal in the demo video",
+      "bond": "0x3C4c2B846e127421132D0C394114ec975BAF8487",
+      "underwrite": {
+        "creFujiTx": "0xc6d4fb4eedc83fd9a309c2ba74391f27bbd2f98e4273db2e04071b11eeb48fdd",
+        "ccipMessageId": "0xc8cea8ebd8f546273bdc83a31553f2b46b9a7e77148b974f97aba765a11d1a7b"
+      },
+      "openTx": "0x08e89eacc34c442fdbe20b7dfc12b686f5d11a285bb18c8b212d8271b8a9e2b0",
+      "kyc": {
+        "creFujiTx": "0xc2abb38f21df1df6997ab31d8b7d406e4a4f3a27ce733f1d5426a4f1d4090f40",
+        "ccipMessageId": "0x4c24d31e653abbb6da53c1062d7061e65dadb900eaf49dbcf5959733d55e7620"
+      },
+      "investTx": "0x7b12c73bea8f183586a07a1af6b24e47fc7673de5350bd9dbb785459b0433199",
+      "markLate": {
+        "creFujiTx": "0xba8ff463e3480fc38dd0b9399cfa1860e26acc7f2a613670600976adf18de0a5",
+        "ccipMessageId": "0x8b3bb8d07fbdcaea3a19bedacc57e86607b9ea2b36304f9e7f31a71b6d95081c"
+      },
+      "repayTx": "0x0dc00464e0fb71da64bf24fcd1215394fc4ffc23d5cf51fff09719156f01d57c",
+      "redeemTx": "0xc0839814bb795dffff3faad1cfcdae29065cd32d3420cb54886753957428c9d9",
+      "lifecycle": "RA bill 5, Rs 96,400 -> $1,019.70 face: approved (CRE, grade A, no buyer step) -> bond issued -> investor verified (CRE) and funded 1,017.15, business paid -> CRE monitor marked late: bond paused, business frozen -> repaid late: unpaused, unfrozen -> redeemed"
     },
     "note": "DealManager v4, all through the web app. creFujiTx is the CRE report on Fuji; ccipMessageId carries it to Hedera."
   },

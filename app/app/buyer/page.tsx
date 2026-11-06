@@ -106,7 +106,7 @@ function PayRow({ deal }: { deal: DealView }) {
         <Button small loading={busy === "pay"} disabled={!address || short_ || !!busy} onClick={pay}>
           Pay {usd(deal.faceValue)}
         </Button>
-        {short_ && (
+        {short_ && !busy && (
           <Button small variant="secondary" loading={busy === "faucet"} disabled={!!busy} onClick={faucet}>
             Get 1,000 test USD
           </Button>
