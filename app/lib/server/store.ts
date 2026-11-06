@@ -1,6 +1,7 @@
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import type { Address, Hex } from "viem";
+import { repoRoot } from "./env";
 
 // Off-chain records: bills waiting for confirmation or underwriting, investor KYC applications,
 // wallet bindings for companies and CRE run history. A JSON file is enough for a testnet demo.
@@ -66,7 +67,8 @@ type Data = {
   runs: Run[];
 };
 
-const file = path.join(process.cwd(), ".data", "store.json");
+// Kept outside app/ so the dev server does not treat every write as a source change.
+const file = path.join(repoRoot, ".data", "store.json");
 
 const load = (): Data => {
   try {

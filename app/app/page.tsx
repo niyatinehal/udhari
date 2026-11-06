@@ -1,69 +1,130 @@
-import Image from "next/image";
+"use client";
+
+import { BuildingIcon, CoinsIcon, DocIcon, GlobeIcon, LinkIcon, PenIcon, ShieldIcon } from "@/components/icons";
+import { IconSquare, Page, Row, Section } from "@/components/ui";
+import { TAGLINE } from "@/lib/brand";
+import { usd } from "@/lib/format";
+import { useApi } from "@/lib/hooks";
+import type { DealView } from "@/lib/server/hedera";
 
 export default function Home() {
+  const { data: deals } = useApi<DealView[]>("/api/deals", 10_000);
+  const funded = deals?.filter((d) => ["Active", "Repaid", "Late", "Defaulted"].includes(d.status)) ?? [];
+  const paidOut = funded.reduce((sum, d) => sum + BigInt(d.target), 0n);
+  const repaid = deals?.filter((d) => d.status === "Repaid").length ?? 0;
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <Page
+      title={TAGLINE}
+      subtitle="Indian small businesses had ₹7.34 lakh crore stuck in delayed payments in March 2024. Here a contractor's milestone bill or a supplier's invoice becomes a bond on Hedera, investors fund it, and the business is paid the same day."
+    >
+      <div className="grid grid-cols-3 gap-3">
+        <Stat label="Deals on Hedera" value={deals ? String(deals.length) : "…"} />
+        <Stat label="Paid to businesses" value={deals ? usd(paidOut) : "…"} />
+        <Stat label="Repaid to investors" value={deals ? String(repaid) : "…"} />
+      </div>
+
+      <Section header="How it works">
+        <Row
+          icon={
+            <IconSquare tone="blue">
+              <DocIcon />
+            </IconSquare>
+          }
+          title="The business raises a bill"
+          subtitle="Against an e-invoice already on the GST registry"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+        <Row
+          icon={
+            <IconSquare tone="orange">
+              <PenIcon />
+            </IconSquare>
+          }
+          title="The buyer confirms it"
+          subtitle="Signs the exact terms with its company wallet"
+        />
+        <Row
+          icon={
+            <IconSquare tone="indigo">
+              <ShieldIcon />
+            </IconSquare>
+          }
+          title="Chainlink CRE underwrites it"
+          subtitle="Registry, signature, credit, FX and Hedera history checked by the DON"
+        />
+        <Row
+          icon={
+            <IconSquare tone="red">
+              <LinkIcon />
+            </IconSquare>
+          }
+          title="CCIP carries the decision to Hedera"
+          subtitle="From the CRE relay on Avalanche Fuji, in about 30 seconds"
+        />
+        <Row
+          icon={
+            <IconSquare tone="purple">
+              <GlobeIcon />
+            </IconSquare>
+          }
+          title="An ATS bond is issued for the bill"
+          subtitle="Verified investors fund it; the business is paid on full funding"
+        />
+        <Row
+          icon={
+            <IconSquare tone="green">
+              <CoinsIcon />
+            </IconSquare>
+          }
+          title="The buyer pays, investors redeem"
+          subtitle="Late bills pause the bond and freeze the business until cured"
+        />
+      </Section>
+
+      <Section header="Open the app as">
+        <Row
+          icon={
+            <IconSquare tone="blue">
+              <BuildingIcon />
+            </IconSquare>
+          }
+          title="Business"
+          subtitle="Raise a bill and get paid early"
+          href="/business"
+          chevron
+        />
+        <Row
+          icon={
+            <IconSquare tone="indigo">
+              <PenIcon />
+            </IconSquare>
+          }
+          title="Buyer"
+          subtitle="Confirm and pay bills"
+          href="/buyer"
+          chevron
+        />
+        <Row
+          icon={
+            <IconSquare tone="green">
+              <CoinsIcon />
+            </IconSquare>
+          }
+          title="Investor"
+          subtitle="Fund verified bills"
+          href="/invest"
+          chevron
+        />
+      </Section>
+    </Page>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl bg-card px-4 py-3">
+      <div className="text-[22px] font-semibold tracking-tight">{value}</div>
+      <div className="text-[13px] text-secondary">{label}</div>
     </div>
   );
 }

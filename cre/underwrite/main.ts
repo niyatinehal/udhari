@@ -171,7 +171,11 @@ const onRequest = async (runtime: Runtime<Config>, payload: HTTPPayload): Promis
 		'tenor',
 		`Due within ${config.policy.maxTenorDays} days`,
 		tenor > 0 && tenor <= config.policy.maxTenorDays * DAY,
-		tenor > 0 ? `due in ${(tenor / DAY).toFixed(tenor < DAY ? 3 : 0)} days` : 'already due',
+		tenor <= 0
+			? 'already due'
+			: tenor < DAY
+				? `due in ${Math.round(tenor / 60)} minutes`
+				: `due in ${Math.round(tenor / DAY)} days`,
 	)
 	const credit = fetchJson<CreditReport>(runtime, `${config.appUrl}/api/mock/bureau/${terms.buyer.gstin}`)
 	const grade = gradeFor(credit)
@@ -226,7 +230,9 @@ const onRequest = async (runtime: Runtime<Config>, payload: HTTPPayload): Promis
 		runtime.log(`Declined: ${checks.filter((c) => !c.ok).map((c) => c.id).join(', ')}`)
 	}
 
-	runtime.log(`RESULT ${JSON.stringify(decision)}`)
+	// The simulator truncates long log lines; checks are already logged one per line above.
+	const { checks: _logged, ...summary } = decision
+	runtime.log(`RESULT ${JSON.stringify(summary)}`)
 	return approved ? 'approved' : 'declined'
 }
 

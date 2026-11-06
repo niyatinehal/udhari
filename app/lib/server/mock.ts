@@ -43,6 +43,9 @@ export type EInvoice = {
 type Seed = Omit<EInvoice, "irn" | "ackNo" | "ackDt" | "sellerName" | "buyerName" | "docType">;
 
 const seeds: Seed[] = [
+  { docNo: "KIP/INV/26-27/034", docDt: "05/11/2026", sellerGstin: "27AAJCK4821M1Z5", buyerGstin: "27AACCA7712R1Z3", description: "Podium waterproofing, Tower A", kind: "invoice", totInvVal: 52800, status: "ACT" },
+  { docNo: "KIP/INV/26-27/033", docDt: "05/11/2026", sellerGstin: "27AAJCK4821M1Z5", buyerGstin: "27AADCH6604K1ZR", description: "Racking foundations, Bhiwandi unit 4", kind: "invoice", totInvVal: 46500, status: "ACT" },
+  { docNo: "NPC/26-27/0419", docDt: "05/11/2026", sellerGstin: "27AAFFN2290Q1ZK", buyerGstin: "29AABCV3391D1ZP", description: "Steering column brackets, 2,400 pcs", kind: "invoice", totInvVal: 61200, status: "ACT" },
   { docNo: "KIP/RA/26-27/014", docDt: "02/11/2026", sellerGstin: "27AAJCK4821M1Z5", buyerGstin: "27AACCA7712R1Z3", description: "RA bill 4: RCC frame, Tower B, Thane West", kind: "milestone", totInvVal: 125000, status: "ACT" },
   { docNo: "KIP/RA/26-27/015", docDt: "04/11/2026", sellerGstin: "27AAJCK4821M1Z5", buyerGstin: "27AACCA7712R1Z3", description: "RA bill 5: blockwork and plaster, Tower B", kind: "milestone", totInvVal: 96400, status: "ACT" },
   { docNo: "KIP/INV/26-27/031", docDt: "29/10/2026", sellerGstin: "27AAJCK4821M1Z5", buyerGstin: "27AADCH6604K1ZR", description: "Warehouse floor resurfacing, Bhiwandi unit 3", kind: "invoice", totInvVal: 58250, status: "ACT" },

@@ -23,7 +23,10 @@ const fuji = createPublicClient({ chain: avalancheFuji, transport: http(fujiRpcU
 
 const ANSI = /\x1b\[[0-9;]*[A-Za-z]/g;
 const RESULT = /\[USER LOG\] RESULT (\{.*\})\s*$/;
+const CHECK = /\[USER LOG\] (PASS|FAIL) ([^:]+): (.*)$/;
 const FUJI_TX = /Fuji in (0x[0-9a-fA-F]{64})/;
+
+type Check = { id: string; label: string; ok: boolean; detail: string };
 
 const queue = globalThis as unknown as { creQueue?: Promise<void> };
 
@@ -74,6 +77,8 @@ const execute = (run: Run) =>
 
     let buffer = "";
     let lastSave = 0;
+    // Workflows log each check as its own line; the result line carries the rest.
+    const checks: Check[] = [];
     const onData = (chunk: Buffer) => {
       buffer += chunk.toString("utf8").replace(ANSI, "");
       const lines = buffer.split(/\r?\n/);
@@ -81,8 +86,16 @@ const execute = (run: Run) =>
       for (const line of lines) {
         if (!line.trim()) continue;
         run.logs.push(line);
+        const check = line.match(CHECK);
+        if (check) checks.push({ id: check[2], label: check[2], ok: check[1] === "PASS", detail: check[3] });
         const result = line.match(RESULT);
-        if (result) run.result = JSON.parse(result[1]);
+        if (result) {
+          try {
+            run.result = { ...JSON.parse(result[1]), ...(checks.length ? { checks } : {}) };
+          } catch {
+            run.logs.push("Could not parse the workflow result");
+          }
+        }
         const tx = line.match(FUJI_TX);
         if (tx) run.txHash = tx[1] as Hex;
       }
@@ -135,6 +148,12 @@ export const startRun = (workflow: string, payload: unknown, onDone?: (run: Run)
   save(run);
   queue.creQueue = (queue.creQueue ?? Promise.resolve()).then(async () => {
     await execute(run);
+    // The CLI occasionally fails to fetch account details from the CRE backend; one retry clears it.
+    if (run.status === "failed" && run.logs.some((l) => l.includes("Credential validation failed"))) {
+      run.logs.push("Retrying after a CRE login check failed");
+      await new Promise((r) => setTimeout(r, 3_000));
+      await execute(run);
+    }
     try {
       onDone?.(run);
     } catch (err) {
