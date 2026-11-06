@@ -1,17 +1,6 @@
 import { cre, decodeJson, Runner, type HTTPPayload, type Runtime } from '@chainlink/cre-sdk'
-import {
-	decodeFunctionResult,
-	encodeFunctionData,
-	isAddressEqual,
-	keccak256,
-	parseAbi,
-	recoverTypedDataAddress,
-	toHex,
-	type Address,
-	type Hex,
-} from 'viem'
+import { decodeFunctionResult, encodeFunctionData, keccak256, parseAbi, toHex, type Address, type Hex } from 'viem'
 import { z } from 'zod'
-import { confirmationDomain, confirmationTypes } from '../shared/confirmation'
 import { fetchJson, fetchMedian, readHedera } from '../shared/http'
 import { Action, encodeApproval, sendReport } from '../shared/reports'
 
@@ -19,13 +8,15 @@ import { Action, encodeApproval, sendReport } from '../shared/reports'
 // by the DON itself (the platform's bill record, the GST e-invoice registry, a credit bureau, an
 // FX rate and Hedera state), so the platform cannot push an approval through on its own say-so.
 // DealManager on Hedera re-checks the policy limits before it accepts the result.
+//
+// The e-invoice is the seller's declaration to the GST system. In production the buyer's own
+// acceptance of it, from the GST Invoice Management System (IMS), becomes one more input here.
 
 const configSchema = z.object({
 	appUrl: z.string(),
 	mirrorUrl: z.string(),
 	fxUrl: z.string(),
 	dealManager: z.string(),
-	hederaChainId: z.number(),
 	chainSelectorName: z.string(),
 	relayAddress: z.string(),
 	gasLimit: z.string(),
@@ -52,9 +43,7 @@ type Terms = {
 	amountPaise: number
 	dueDate: number
 	fileHash: Hex
-	confirmation: { wallet: Address; signature: Hex; signedAt: number } | null
 }
-type Party = { gstin: string; name: string; wallet: Address | null }
 type EInvoice = {
 	irn: string
 	status: 'ACT' | 'CNL'
@@ -82,7 +71,7 @@ const gradeFor = (credit: CreditReport): number => {
 	return grade
 }
 
-const onRequest = async (runtime: Runtime<Config>, payload: HTTPPayload): Promise<string> => {
+const onRequest = (runtime: Runtime<Config>, payload: HTTPPayload): string => {
 	const { config } = runtime
 	const { billId } = requestSchema.parse(decodeJson(payload.input))
 	const now = Math.floor(runtime.now().getTime() / 1000)
@@ -114,33 +103,7 @@ const onRequest = async (runtime: Runtime<Config>, payload: HTTPPayload): Promis
 		`registry ₹${einvoice.totInvVal}, bill ₹${terms.amountPaise / 100}`,
 	)
 
-	// 2. The buyer's registered wallet signed these exact terms.
-	const buyer = fetchJson<Party>(runtime, `${config.appUrl}/api/parties/${terms.buyer.gstin}`)
-	const signer = terms.confirmation
-		? await recoverTypedDataAddress({
-				domain: confirmationDomain(config.hederaChainId),
-				types: confirmationTypes,
-				primaryType: 'BillConfirmation',
-				message: {
-					billId: terms.id,
-					ref: terms.ref,
-					irn: terms.irn,
-					seller: terms.seller.wallet,
-					amountPaise: BigInt(terms.amountPaise),
-					dueDate: BigInt(terms.dueDate),
-					fileHash: terms.fileHash,
-				},
-				signature: terms.confirmation.signature,
-			})
-		: null
-	check(
-		'buyer',
-		'Buyer confirmed the bill',
-		signer !== null && buyer.wallet !== null && isAddressEqual(signer, buyer.wallet),
-		signer ? `signed by ${signer}` : 'no confirmation from the buyer',
-	)
-
-	// 3. Not financed before, here or through anyone using the same registry key, and the seller
+	// 2. Not financed before, here or through anyone using the same registry key, and the seller
 	//    is in good standing. Read from Hedera through the mirror node.
 	const used = decodeFunctionResult({
 		abi: managerAbi,
@@ -165,7 +128,7 @@ const onRequest = async (runtime: Runtime<Config>, payload: HTTPPayload): Promis
 	})
 	check('standing', 'Seller has no late deals', !frozen, frozen ? 'seller frozen on Hedera' : 'seller in good standing')
 
-	// 4. Tenor and buyer credit.
+	// 3. Tenor and buyer credit.
 	const tenor = terms.dueDate - now
 	check(
 		'tenor',
@@ -186,7 +149,7 @@ const onRequest = async (runtime: Runtime<Config>, payload: HTTPPayload): Promis
 		`CMR-${credit.cmrRank}, ${credit.avgDaysLate} days late on average, ${credit.openDefaults} open defaults: grade ${GRADES[grade - 1]}`,
 	)
 
-	// 5. Price it. Investors fund the face value less a discount for the time to maturity.
+	// 4. Price it. Investors fund the face value less a discount for the time to maturity.
 	const inrPerUsd = fetchMedian(runtime, config.fxUrl, ['rates', 'INR'])
 	const faceValue = BigInt(Math.floor((terms.amountPaise / 100 / inrPerUsd) * 100)) * 10_000n // whole cents, 6 decimals
 	const annualRate = config.policy.annualRateBps[grade - 1]

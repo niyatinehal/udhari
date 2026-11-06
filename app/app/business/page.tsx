@@ -34,7 +34,7 @@ export default function BusinessPage() {
   const [raising, setRaising] = useState<Listed | null>(null);
 
   return (
-    <Page title="Business" subtitle="Raise a bill against a GST e-invoice. Once the buyer confirms it and Chainlink CRE underwrites it, investors fund it on Hedera and you are paid at once.">
+    <Page title="Business" subtitle="Raise a bill against a GST e-invoice. Once Chainlink CRE underwrites it, investors fund it on Hedera and you are paid at once.">
       <CompanySection role="seller" state={company} />
 
       {gstin && (
@@ -88,7 +88,7 @@ function UnderwriteButton({ bill }: { bill: Bill }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const status = bill.underwriting?.status;
-  if (!bill.confirmation || status === "running" || status === "approved") return null;
+  if (status === "running" || status === "approved") return null;
 
   const run = async () => {
     setBusy(true);
@@ -155,7 +155,7 @@ function RaiseSheet({ invoice, wallet, onClose }: { invoice: Listed | null; wall
           <Section header="Buyer pays">
             <Choices options={DUE_OPTIONS} value={due} onChange={setDue} />
           </Section>
-          <Section header="Document" footer="Only its hash leaves your device. The buyer signs this hash along with the terms.">
+          <Section header="Document" footer="Only its hash leaves your device.">
             <label className="flex min-h-[44px] cursor-pointer items-center gap-3 px-4 py-2.5">
               <span className="flex-1 text-[17px] text-tint">{file ? file.name : "Choose the bill or certificate (PDF)"}</span>
               {file && <span className="font-mono text-[13px] text-secondary">{file.hash.slice(0, 10)}…</span>}
@@ -163,7 +163,7 @@ function RaiseSheet({ invoice, wallet, onClose }: { invoice: Listed | null; wall
             </label>
           </Section>
           <Button loading={busy} disabled={!file} onClick={submit}>
-            Send to {invoice.buyerName.split(" ")[0]} for confirmation
+            Raise bill
           </Button>
           <ErrorText error={error} />
         </>

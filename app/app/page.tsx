@@ -36,21 +36,12 @@ export default function Home() {
         />
         <Row
           icon={
-            <IconSquare tone="orange">
-              <PenIcon />
-            </IconSquare>
-          }
-          title="The buyer confirms it"
-          subtitle="Signs the exact terms with its company wallet"
-        />
-        <Row
-          icon={
             <IconSquare tone="indigo">
               <ShieldIcon />
             </IconSquare>
           }
           title="Chainlink CRE underwrites it"
-          subtitle="Registry, signature, credit, FX and Hedera history checked by the DON"
+          subtitle="GST registry, buyer credit, FX and Hedera history, checked by the DON"
         />
         <Row
           icon={
@@ -100,7 +91,7 @@ export default function Home() {
             </IconSquare>
           }
           title="Buyer"
-          subtitle="Confirm and pay bills"
+          subtitle="Pay financed bills"
           href="/buyer"
           chevron
         />

@@ -9,28 +9,28 @@ investors fund it, and the business is paid the moment it is fully funded. When 
 investors redeem the face value.
 
 Nothing is taken on the platform's word. A Chainlink CRE workflow checks the bill against the GST
-e-invoice registry, verifies the buyer's signature, pulls a credit report and an FX rate, and reads
-Hedera to make sure the invoice was never financed before. Its decision reaches Hedera over
+e-invoice registry, pulls the buyer's credit report and an FX rate, and reads Hedera to make sure
+the invoice was never financed before. Its decision reaches Hedera over
 Chainlink CCIP, where a contract enforces the policy again and issues an ATS bond for the deal.
 
 ## How a bill moves
 
 1. **The business raises a bill** against an e-invoice already registered on the GST
-   Invoice Registration Portal (IRP), with the due date and the signed document.
-2. **The buyer confirms it** by signing the exact terms (EIP-712) with its company wallet.
-3. **CRE underwrites it.** The DON fetches every input itself, so the platform cannot push an
-   approval through: the bill record, the e-invoice (status, parties, amount), the buyer's
-   registered wallet, a credit report, and an INR/USD rate (median across nodes). It reads Hedera
-   through the mirror node to reject an invoice financed before or a seller with a late deal. It
-   grades the buyer A to E and prices the discount for the time to maturity.
-4. **CCIP carries the approval to Hedera** from the CRE relay on Avalanche Fuji (about 30 s).
+   Invoice Registration Portal (IRP), with the due date and the bill document. Nothing is needed
+   from the buyer: the e-invoice is the record of what it owes.
+2. **CRE underwrites it.** The DON fetches every input itself, so the platform cannot push an
+   approval through: the bill record, the e-invoice (status, parties, amount), the buyer's credit
+   report, and an INR/USD rate (median across nodes). It reads Hedera through the mirror node to
+   reject an invoice financed before or a seller with a late deal. It grades the buyer A to E and
+   prices the discount for the time to maturity.
+3. **CCIP carries the approval to Hedera** from the CRE relay on Avalanche Fuji (about 30 s).
    `DealManager` checks the grade and discount against its own limits and records the IRN hash so
    the same invoice can never be financed twice.
-5. **An ATS bond is issued for the deal**: one bond per bill, `DealManager` holding every role.
+4. **An ATS bond is issued for the deal**: one bond per bill, `DealManager` holding every role.
    `DealManager` is also the bond's external KYC list, so only wallets CRE has verified can hold it.
-6. **Investors fund it** in USD stablecoin. On full funding the business is paid in the same
+5. **Investors fund it** in USD stablecoin. On full funding the business is paid in the same
    transaction.
-7. **The buyer pays the face value**; holders redeem their share. If the due date passes unpaid,
+6. **The buyer pays the face value**; holders redeem their share. If the due date passes unpaid,
    the CRE monitor marks the deal late: the bond is paused and the business frozen until it is
    cured. A deal not fully funded by its due date can be closed and refunded 1:1.
 
@@ -66,7 +66,7 @@ finality keeps CRE-to-Hedera at about 30 seconds.
 Workflows in TypeScript, run with `cre workflow simulate --broadcast`, so reports are really signed
 and written on Fuji:
 - [`cre/underwrite`](cre/underwrite/main.ts): HTTP trigger; HTTP capability with identical and
-  median consensus; EIP-712 signature recovery; Hedera reads through the mirror node; EVM write.
+  median consensus; Hedera reads through the mirror node; EVM write.
 - [`cre/kyc`](cre/kyc/main.ts): HTTP trigger; KYC provider check; marks the wallet on Hedera.
 - [`cre/monitor`](cre/monitor/main.ts): cron trigger; reads every deal and the reserves from Hedera;
   marks overdue deals late or defaulted; trips the funding circuit breaker if reserves fall short.
@@ -112,12 +112,24 @@ driven from the web app.
 ## What is real and what is a stand-in
 
 - **Real:** the contracts, ATS bonds, CCIP messages, CRE reports written on Fuji, Hedera reads
-  through the mirror node, the INR/USD rate, the buyer's EIP-712 signature.
+  through the mirror node, the INR/USD rate.
 - **Stand-ins**, served by the web app at `/api/mock/*` and fetched by CRE over HTTP exactly as
   the real services would be: the GST IRP (e-invoices by IRN), a commercial credit bureau, and a
   KYC provider. Companies and invoices are fictional.
 - **Test USD** stands in for USDC on Hedera testnet, whose faucet did not deliver during the event.
 - **CRE** runs in the simulator with `--broadcast`; deployment to the DON needs early access.
+
+## In production
+
+- **Buyer acceptance from the GST system.** An e-invoice is the seller's declaration. Since
+  October 2024 buyers accept or reject each supplier invoice in the GST Invoice Management System
+  (IMS) to claim input tax credit; CRE adds that acceptance as an underwriting input, so the buyer
+  never has to join the platform.
+- **Repayment to the deal.** The financed e-invoice names the deal's collection account in its
+  payment details, so the buyer's normal payment lands with investors.
+- **Business verification (KYB)** when a seller onboards, alongside investor KYC.
+- **USDC** in place of Test USD, and CRE deployed to the DON with its cron monitor running on
+  schedule.
 
 ## Run it
 

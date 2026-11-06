@@ -55,7 +55,6 @@ export async function POST(req: Request) {
       fileHash,
       fileName: body.fileName?.slice(0, 120) ?? "bill.pdf",
       createdAt: now,
-      confirmation: null,
       underwriting: null,
     };
     data.bills.push(created);

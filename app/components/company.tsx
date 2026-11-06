@@ -12,8 +12,8 @@ import { Button, Choices, ErrorText, IconSquare, Row, Section, Sheet } from "./u
 export type Party = Company & { wallet: `0x${string}` | null };
 
 /**
- * The company the connected wallet acts for. Binding a wallet stands in for onboarding (KYB);
- * CRE checks a buyer's signature against the wallet bound here.
+ * The company the connected wallet acts for. A seller links its wallet, which stands in for
+ * onboarding (KYB); its bills pay out to that wallet. A buyer only picks its company.
  */
 export function useCompany(role: "seller" | "buyer") {
   const [gstin, setGstin] = useStored(`company:${role}`);
@@ -30,7 +30,8 @@ export function CompanySection({ role, state }: { role: "seller" | "buyer"; stat
   const [picking, setPicking] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const bound = !!(company?.wallet && address && isAddressEqual(company.wallet, address));
+  // Buyers pay from any wallet; only a seller's wallet has to be linked.
+  const bound = role === "buyer" || !!(company?.wallet && address && isAddressEqual(company.wallet, address));
 
   const bind = async () => {
     if (!company || !address) return;
@@ -65,7 +66,7 @@ export function CompanySection({ role, state }: { role: "seller" | "buyer"; stat
         }
         title={company?.name ?? "Choose a company"}
         subtitle={company ? `GSTIN ${company.gstin} · ${company.city}` : undefined}
-        detail={company?.wallet ? short(company.wallet) : undefined}
+        detail={role === "seller" && company?.wallet ? short(company.wallet) : undefined}
         onClick={() => setPicking(true)}
         chevron
       />

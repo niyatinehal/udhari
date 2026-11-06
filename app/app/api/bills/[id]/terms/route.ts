@@ -1,7 +1,7 @@
 import { fail, live, ok } from "@/lib/server/respond";
 import { read } from "@/lib/server/store";
 
-// What CRE underwrites: the fields that do not change once the buyer has signed. Every node in
+// What CRE underwrites: the fields that do not change once the bill is raised. Every node in
 // the DON must receive identical bytes, so run status and other moving parts are left out.
 export async function GET(_req: Request, ctx: RouteContext<"/api/bills/[id]/terms">) {
   await live();
@@ -18,6 +18,5 @@ export async function GET(_req: Request, ctx: RouteContext<"/api/bills/[id]/term
     amountPaise: b.amountPaise,
     dueDate: b.dueDate,
     fileHash: b.fileHash,
-    confirmation: b.confirmation,
   });
 }

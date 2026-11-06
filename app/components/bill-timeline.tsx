@@ -23,15 +23,10 @@ export function BillTimeline({ bill, deal, action }: { bill: Bill; deal?: DealVi
   const steps: Step[] = [
     { label: "Raised", detail: `${bill.fileName} · due ${date(bill.dueDate)}`, state: "done" },
     {
-      label: "Buyer confirmed",
-      detail: bill.confirmation ? `Signed by ${short(bill.confirmation.wallet)}` : `Waiting for ${bill.buyer.name}`,
-      state: bill.confirmation ? "done" : "active",
-    },
-    {
       label: "Underwritten by Chainlink CRE",
-      state: !u ? (bill.confirmation ? "active" : "waiting") : u.status === "running" ? "active" : u.status === "approved" ? "done" : "failed",
+      state: !u ? "active" : u.status === "running" ? "active" : u.status === "approved" ? "done" : "failed",
       detail: !u
-        ? "E-invoice, buyer signature, credit and Hedera history, checked by the DON"
+        ? "E-invoice, buyer credit, FX and Hedera history, checked by the DON"
         : u.status === "running"
           ? "Running"
           : decision

@@ -3,7 +3,7 @@ import { companyByGstin } from "@/lib/server/mock";
 import { fail, live, ok } from "@/lib/server/respond";
 import { read, write } from "@/lib/server/store";
 
-// The wallet that acts for a company. CRE checks the buyer's confirmation against it.
+// The wallet that acts for a company: a seller's bills pay out to it.
 export async function GET(_req: Request, ctx: RouteContext<"/api/parties/[gstin]">) {
   await live();
   const { gstin } = await ctx.params;

@@ -3,7 +3,7 @@ import path from "node:path";
 import type { Address, Hex } from "viem";
 import { repoRoot } from "./env";
 
-// Off-chain records: bills waiting for confirmation or underwriting, investor KYC applications,
+// Off-chain records: bills waiting for underwriting, investor KYC applications,
 // wallet bindings for companies and CRE run history. A JSON file is enough for a testnet demo.
 
 export type Decision = {
@@ -34,7 +34,6 @@ export type Bill = {
   fileHash: Hex;
   fileName: string;
   createdAt: number;
-  confirmation: { wallet: Address; signature: Hex; signedAt: number } | null;
   underwriting: { runId: string; status: "running" | "approved" | "declined" | "failed"; decision?: Decision } | null;
 };
 
